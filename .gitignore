@@ -1,0 +1,33 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+.venv*/
+venv/
+
+# Packaging output
+build/
+dist/
+*.egg-info/
+
+# Coverage and test output
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local experiment output
+*.log
+results/
+artifacts/
