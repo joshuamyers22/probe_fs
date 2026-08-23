@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import numpy as np
 
-__all__ = ["shadow_blocks", "shadow_threshold", "QUANTILE_METHODS"]
+__all__ = ["QUANTILE_METHODS", "shadow_blocks", "shadow_threshold"]
 
 # Section 6: "The exact empirical-quantile convention must be specified in the
 # implementation." The default is `higher`, the conservative choice: with m

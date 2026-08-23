@@ -17,13 +17,13 @@ import hashlib
 import json
 from dataclasses import dataclass, field
 from numbers import Integral
-from typing import Any, Sequence
+from typing import Any
 
 from .contexts import CONTEXT_KINDS
 from .losses import LOSSES, Loss, get_loss
 from .shadows import QUANTILE_METHODS
 
-__all__ = ["MethodSpec", "GATES", "SHADOW_SCOPES"]
+__all__ = ["GATES", "SHADOW_SCOPES", "MethodSpec"]
 
 # "soft" is the primary method (Section 7). "hard" and "none" exist for the
 # Section 13 sensitivity analyses and the Section 10 ungated comparison.
@@ -131,7 +131,8 @@ class MethodSpec:
             or any(not isinstance(k, Integral) or isinstance(k, bool) or k < 1 for k in self.candidate_k)
         ):
             raise ValueError("candidate_k must be a non-empty set of positive sizes")
-        object.__setattr__(self, "candidate_k", tuple(sorted(set(int(k) for k in self.candidate_k))))
+        unique_sizes = {int(size) for size in self.candidate_k}
+        object.__setattr__(self, "candidate_k", tuple(sorted(unique_sizes)))
 
     # -- derived -----------------------------------------------------------
     @property
@@ -159,7 +160,7 @@ class MethodSpec:
         ks = tuple(k for k in self.candidate_k if k <= n_players)
         return ks if ks else (n_players,)
 
-    def replace(self, **changes: Any) -> "MethodSpec":
+    def replace(self, **changes: Any) -> MethodSpec:
         """Return a modified copy (the original stays frozen)."""
         from dataclasses import replace as _replace
 

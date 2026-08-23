@@ -16,26 +16,26 @@ explicitly, including the "adopt the simpler full-conditioning method" branch.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from numbers import Integral
-from typing import Any, Callable, Sequence
+from typing import Any
 
 import numpy as np
 
 from .budget import BudgetPair, budget_ladder
 from .config import MethodSpec
-from .metrics import SignalClasses, compare_primary_endpoint
+from .metrics import compare_primary_endpoint
 from .nested import NestedResult, nested_evaluate
-from .players import Players
 from .simulate import SimData
 
 __all__ = [
     "StudyConstraints",
-    "run_spec",
-    "matched_compute_comparison",
     "context_ablation",
-    "direct_alternative_specs",
     "decision_criteria",
+    "direct_alternative_specs",
+    "matched_compute_comparison",
+    "run_spec",
 ]
 
 

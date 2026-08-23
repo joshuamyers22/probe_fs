@@ -42,7 +42,7 @@ from .learners import FitCounter, evaluate_player_set
 from .players import Players, derive_rng, derive_seed
 from .shadows import shadow_blocks, shadow_threshold
 
-__all__ = ["ImportanceResult", "estimate_importance", "rank_players", "apply_gate"]
+__all__ = ["ImportanceResult", "apply_gate", "estimate_importance", "rank_players"]
 
 # RNG address-space tags, so different draws never collide.
 _TAG_SPLIT, _TAG_CONTEXT, _TAG_SHADOW, _TAG_LEARNER = 1, 2, 3, 4
@@ -93,7 +93,7 @@ class ImportanceResult:
             "mean_delta": self.delta.mean(axis=(1, 2)),
         }
 
-    def regate(self, spec: MethodSpec) -> "ImportanceResult":
+    def regate(self, spec: MethodSpec) -> ImportanceResult:
         """Re-derive scores under a different gate or shadow scope, without refitting.
 
         Valid only for a spec differing from the one that produced this result in
@@ -216,7 +216,7 @@ def _split_indices(
     n: int, val_fraction: float, rng: np.random.Generator
 ) -> tuple[np.ndarray, np.ndarray]:
     idx = rng.permutation(n)
-    n_val = max(1, int(round(val_fraction * n)))
+    n_val = max(1, round(val_fraction * n))
     n_val = min(n_val, n - 1)
     return np.sort(idx[n_val:]), np.sort(idx[:n_val])
 
@@ -282,7 +282,16 @@ def estimate_importance(
 
         cache: dict[frozenset, float] = {}
 
-        def base_loss(player_set: frozenset) -> float:
+        def base_loss(
+            player_set: frozenset,
+            *,
+            cache: dict[frozenset, float] = cache,
+            X_tr_all: np.ndarray = X_tr_all,
+            y_tr: np.ndarray = y_tr,
+            X_va_all: np.ndarray = X_va_all,
+            y_va: np.ndarray = y_va,
+            learner_seed: int = learner_seed,
+        ) -> float:
             hit = cache.get(player_set)
             if hit is not None:
                 counter.cache_hits += 1

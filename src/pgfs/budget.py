@@ -38,13 +38,13 @@ from dataclasses import dataclass
 from .config import MethodSpec
 
 __all__ = [
-    "expected_base_fits",
-    "expected_importance_fits",
-    "spec_importance_fits",
-    "matched_ungated_contexts",
-    "match_budget",
     "BudgetPair",
     "budget_ladder",
+    "expected_base_fits",
+    "expected_importance_fits",
+    "match_budget",
+    "matched_ungated_contexts",
+    "spec_importance_fits",
 ]
 
 

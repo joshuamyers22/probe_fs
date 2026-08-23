@@ -16,18 +16,18 @@ validation rows into the ranking and bias the chosen ``k`` downward.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Iterable
 
 import numpy as np
 from sklearn.model_selection import KFold, StratifiedKFold
 
 from .config import MethodSpec
-from .importance import ImportanceResult, estimate_importance
+from .importance import estimate_importance
 from .learners import FitCounter, evaluate_player_set
 from .players import Players, derive_seed
 
-__all__ = ["KSelection", "choose_k_by_inner_cv", "one_se_choice", "make_cv"]
+__all__ = ["KSelection", "choose_k_by_inner_cv", "make_cv", "one_se_choice"]
 
 INNER_CV_SEED_OFFSET = 7_919
 SELECTION_FIT_KEY = 12

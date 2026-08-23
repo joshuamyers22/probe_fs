@@ -41,15 +41,15 @@ def small_data(n=120, seed=0):
 
 
 def base_spec(**kw):
-    defaults = dict(
-        learner=Ridge(alpha=1.0),
-        loss="mse",
-        n_contexts=2,
-        n_importance_splits=1,
-        n_shadows=2,
-        candidate_k=(1, 2, 3, 4),
-        seed=7,
-    )
+    defaults = {
+        "learner": Ridge(alpha=1.0),
+        "loss": "mse",
+        "n_contexts": 2,
+        "n_importance_splits": 1,
+        "n_shadows": 2,
+        "candidate_k": (1, 2, 3, 4),
+        "seed": 7,
+    }
     defaults.update(kw)
     return MethodSpec(**defaults)
 
@@ -217,7 +217,11 @@ def test_measured_budgets_match_at_the_paired_rung():
 def test_outer_test_fold_does_not_influence_selection():
     data = small_data(n=140, seed=2)
     spec = base_spec(n_contexts=2, n_shadows=2, candidate_k=(1, 2, 3))
-    kwargs = dict(n_outer_folds=3, n_inner_folds=2, signal_classes=data.signal_classes)
+    kwargs = {
+        "n_outer_folds": 3,
+        "n_inner_folds": 2,
+        "signal_classes": data.signal_classes,
+    }
 
     first = nested_evaluate(data.X, data.y, data.players, spec, **kwargs)
     again = nested_evaluate(data.X, data.y, data.players, spec, **kwargs)

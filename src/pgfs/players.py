@@ -9,8 +9,8 @@ permutation for the entire block").
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from typing import Iterable, Sequence
 
 import numpy as np
 
@@ -62,7 +62,7 @@ class Players:
         return tuple(len(c) for c in self.columns)
 
     @classmethod
-    def singletons(cls, n_columns: int, names: Sequence[str] | None = None) -> "Players":
+    def singletons(cls, n_columns: int, names: Sequence[str] | None = None) -> Players:
         """One player per column - the default in Sections 4-8."""
         if not isinstance(n_columns, (int, np.integer)) or n_columns < 1:
             raise ValueError("n_columns must be a positive integer")
@@ -77,7 +77,7 @@ class Players:
         cls,
         blocks: Iterable[Sequence[int]],
         names: Sequence[str] | None = None,
-    ) -> "Players":
+    ) -> Players:
         """Explicit blocks; each block is one indivisible player."""
         cols = tuple(tuple(int(c) for c in b) for b in blocks)
         if names is None:

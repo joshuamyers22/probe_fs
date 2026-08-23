@@ -21,7 +21,7 @@ from sklearn.base import clone
 
 from .losses import Loss
 
-__all__ = ["FitCounter", "fit_predict", "evaluate_player_set"]
+__all__ = ["FitCounter", "evaluate_player_set", "fit_predict"]
 
 MAX_RANDOM_SEED = 2**31 - 1
 
@@ -60,7 +60,7 @@ class FitCounter:
         else:  # pragma: no cover - defensive
             raise ValueError(f"unknown fit kind {kind!r}")
 
-    def merge(self, other: "FitCounter") -> None:
+    def merge(self, other: FitCounter) -> None:
         self.importance += other.importance
         self.shadow += other.shadow
         self.selection += other.selection
@@ -92,7 +92,7 @@ class _ConstantModel:
         self.task = task
         self.value_ = 0.0
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> "_ConstantModel":
+    def fit(self, X: np.ndarray, y: np.ndarray) -> _ConstantModel:
         self.value_ = float(np.mean(y)) if len(y) else 0.0
         return self
 

@@ -22,8 +22,9 @@ Two guardrails from Section 9 are enforced in code rather than left to disciplin
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Any, Sequence
+from typing import Any
 
 import numpy as np
 
@@ -40,7 +41,7 @@ from .metrics import (
 from .players import Players, derive_seed
 from .selection import KSelection, choose_k_by_inner_cv, make_cv
 
-__all__ = ["OuterFoldResult", "NestedResult", "nested_evaluate", "finalize_for_deployment"]
+__all__ = ["NestedResult", "OuterFoldResult", "finalize_for_deployment", "nested_evaluate"]
 
 OUTER_CV_SEED_OFFSET = 104_729
 FINAL_FIT_KEY = 22

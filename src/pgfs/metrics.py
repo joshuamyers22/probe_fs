@@ -19,19 +19,19 @@ performance and set size, "since selecting nothing is trivially stable" -
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from itertools import combinations
-from typing import Iterable, Sequence
 
 import numpy as np
 
 __all__ = [
     "SignalClasses",
     "class_recall",
-    "selection_report",
-    "primary_endpoint",
     "compare_primary_endpoint",
     "jaccard",
+    "primary_endpoint",
+    "selection_report",
     "stability_report",
 ]
 

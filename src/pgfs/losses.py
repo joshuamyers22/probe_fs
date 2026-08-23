@@ -11,12 +11,12 @@ so that positive Delta means adding player j improved validation performance.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 
-__all__ = ["Loss", "LOSSES", "get_loss"]
+__all__ = ["LOSSES", "Loss", "get_loss"]
 
 _EPS = 1e-12
 

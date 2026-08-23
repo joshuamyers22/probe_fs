@@ -28,7 +28,7 @@ import numpy as np
 from .metrics import SignalClasses
 from .players import Players
 
-__all__ = ["SimData", "make_primary", "make_secondary", "SECONDARY_REGIMES"]
+__all__ = ["SECONDARY_REGIMES", "SimData", "make_primary", "make_secondary"]
 
 SECONDARY_REGIMES = (
     "independent",     # independent null and signal features

@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import numpy as np
 
-__all__ = ["CONTEXT_KINDS", "sample_context", "n_contexts_for_kind"]
+__all__ = ["CONTEXT_KINDS", "n_contexts_for_kind", "sample_context"]
 
 CONTEXT_KINDS = ("permutation", "full")
 

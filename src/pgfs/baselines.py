@@ -23,8 +23,9 @@ knockoff-style FDR claims for the gated method.
 from __future__ import annotations
 
 import time
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Callable, Sequence
+from typing import Any
 
 import numpy as np
 from sklearn.feature_selection import RFECV
@@ -38,16 +39,16 @@ from .players import Players, derive_rng
 from .selection import make_cv
 
 __all__ = [
-    "Selector",
+    "DEFAULT_BASELINES",
     "BaselineResult",
+    "Selector",
     "run_baseline_nested",
     "select_all",
+    "select_boruta",
+    "select_knockoffs",
     "select_learner_native",
     "select_rfecv",
     "select_stability_selection",
-    "select_boruta",
-    "select_knockoffs",
-    "DEFAULT_BASELINES",
 ]
 
 # A selector maps outer-training data to a set of player indices.
@@ -63,7 +64,7 @@ KNOCKOFF_RNG_KEY = 33
 # --------------------------------------------------------------------------
 def _players_from_columns(players: Players, selected_cols: Sequence[int]) -> tuple[int, ...]:
     """A block player counts as selected if any of its columns was selected."""
-    chosen = set(int(c) for c in selected_cols)
+    chosen = {int(column) for column in selected_cols}
     return tuple(j for j in range(len(players)) if chosen.intersection(players.columns[j]))
 
 
@@ -189,7 +190,6 @@ def select_boruta(
     matched to a conditioning position.
     """
     from scipy.stats import binom
-
     from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
     rng = derive_rng(seed, BORUTA_RNG_KEY)
