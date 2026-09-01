@@ -22,19 +22,16 @@ knockoff-style FDR claims for the gated method.
 
 from __future__ import annotations
 
-import time
-from collections.abc import Callable, Sequence
-from dataclasses import dataclass, field
-from typing import Any
+from collections.abc import Sequence
 
 import numpy as np
 from sklearn.feature_selection import RFECV
 from sklearn.linear_model import Lasso, LassoCV, LogisticRegression, lasso_path
 from sklearn.preprocessing import StandardScaler
 
+from .baseline_evaluation import BaselineResult, Selector, run_baseline_nested
 from .config import MethodSpec
-from .learners import FitCounter, evaluate_player_set
-from .metrics import SignalClasses, selection_report, stability_report
+from .learners import evaluate_player_set
 from .players import Players, derive_rng
 from .selection import make_cv
 
@@ -51,9 +48,6 @@ __all__ = [
     "select_stability_selection",
 ]
 
-# A selector maps outer-training data to a set of player indices.
-Selector = Callable[[np.ndarray, np.ndarray, Players, MethodSpec, int], tuple]
-OUTER_CV_SEED_OFFSET = 104_729
 STABILITY_RNG_KEY = 31
 BORUTA_RNG_KEY = 32
 KNOCKOFF_RNG_KEY = 33
@@ -275,105 +269,3 @@ DEFAULT_BASELINES: dict[str, Selector] = {
     "boruta": select_boruta,
     "knockoffs": select_knockoffs,
 }
-
-
-# --------------------------------------------------------------------------
-# nested runner
-# --------------------------------------------------------------------------
-@dataclass
-class BaselineResult:
-    """Baseline results in the same reporting shape as :class:`NestedResult`."""
-
-    name: str
-    per_fold_sets: list[tuple[int, ...]]
-    outer_losses: list[float]
-    outer_losses_all: list[float]
-    players: Players
-    seconds: float
-    counter: FitCounter = field(default_factory=FitCounter)
-    signal_classes: SignalClasses | None = None
-
-    def report(self) -> dict[str, Any]:
-        rep: dict[str, Any] = {
-            "method": self.name,
-            "mean_outer_loss": float(np.mean(self.outer_losses)),
-            "se_outer_loss": float(
-                np.std(self.outer_losses, ddof=1) / np.sqrt(len(self.outer_losses))
-            ) if len(self.outer_losses) > 1 else 0.0,
-            "mean_outer_loss_all_features": float(np.mean(self.outer_losses_all)),
-            "mean_selected_size": float(np.mean([len(s) for s in self.per_fold_sets])),
-            "wall_clock_seconds": round(self.seconds, 4),
-            "model_fits_counted": self.counter.total,
-            **stability_report(self.per_fold_sets, self.outer_losses),
-        }
-        if self.signal_classes is not None:
-            per = [selection_report(s, self.signal_classes) for s in self.per_fold_sets]
-            rep["class_recall"] = float(np.mean([r["class_recall"] for r in per]))
-            rep["false_selections"] = float(np.mean([r["n_outside_classes"] for r in per]))
-            rep["redundant_selections"] = float(np.mean([r["n_redundant"] for r in per]))
-        return rep
-
-
-def run_baseline_nested(
-    X: np.ndarray,
-    y: np.ndarray,
-    players: Players,
-    spec: MethodSpec,
-    selector: Selector,
-    name: str,
-    n_outer_folds: int = 5,
-    signal_classes: SignalClasses | None = None,
-) -> BaselineResult:
-    """Run a baseline on the *same* outer folds as the primary method.
-
-    The outer folds are generated from the same seed and splitter as
-    :func:`pgfs.nested.nested_evaluate`, so baseline and method results are paired
-    fold by fold rather than merely averaged over comparable designs.
-    """
-    X = np.asarray(X, dtype=float)
-    y = np.asarray(y)
-    counter = FitCounter()
-    outer_cv = make_cv(
-        n_outer_folds, spec.task, seed=int(spec.seed) + OUTER_CV_SEED_OFFSET
-    )
-    strat = y if spec.task != "regression" else None
-
-    sets: list[tuple[int, ...]] = []
-    losses: list[float] = []
-    losses_all: list[float] = []
-    t0 = time.perf_counter()
-
-    for o, (tr, te) in enumerate(outer_cv.split(X, strat)):
-        X_tr, y_tr, X_te, y_te = X[tr], y[tr], X[te], y[te]
-        selected = tuple(selector(X_tr, y_tr, players, spec, int(spec.seed) + o))
-        if not selected:
-            selected = (0,)
-        sets.append(selected)
-
-        cols = players.select_columns(selected)
-        losses.append(
-            evaluate_player_set(
-                spec.learner, spec.loss_fn,
-                X_tr[:, cols], y_tr, X_te[:, cols], y_te,
-                seed=int(spec.seed) + o, counter=counter, kind="selection",
-            )
-        )
-        all_cols = players.select_columns(range(len(players)))
-        losses_all.append(
-            evaluate_player_set(
-                spec.learner, spec.loss_fn,
-                X_tr[:, all_cols], y_tr, X_te[:, all_cols], y_te,
-                seed=int(spec.seed) + o, counter=counter, kind="selection",
-            )
-        )
-
-    return BaselineResult(
-        name=name,
-        per_fold_sets=sets,
-        outer_losses=losses,
-        outer_losses_all=losses_all,
-        players=players,
-        seconds=time.perf_counter() - t0,
-        counter=counter,
-        signal_classes=signal_classes,
-    )
