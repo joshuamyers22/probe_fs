@@ -36,3 +36,14 @@ def test_experiment_models_do_not_depend_on_experiment_runner() -> None:
         if isinstance(node, ast.ImportFrom) and node.module
     }
     assert "experiments" not in modules
+
+
+def test_estimation_validation_does_not_depend_on_fitting_adapters() -> None:
+    path = Path("src/pgfs/estimation_data.py")
+    tree = ast.parse(path.read_text())
+    modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert modules.isdisjoint({"learners", "importance"})
