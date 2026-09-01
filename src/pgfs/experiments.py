@@ -17,14 +17,13 @@ explicitly, including the "adopt the simpler full-conditioning method" branch.
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
-from numbers import Integral
 from typing import Any
 
 import numpy as np
 
-from .budget import BudgetPair, budget_ladder
+from .budget import budget_ladder
 from .config import MethodSpec
+from .experiment_models import ComparisonTable, StudyConstraints
 from .metrics import compare_primary_endpoint
 from .nested import NestedResult, nested_evaluate
 from .simulate import SimData
@@ -37,28 +36,6 @@ __all__ = [
     "matched_compute_comparison",
     "run_spec",
 ]
-
-
-@dataclass(frozen=True)
-class StudyConstraints:
-    """Section 11's prespecified constants. Fixed before simulation, never tuned.
-
-    ``noninferiority_margin`` (``delta``) and ``k_max`` qualify the endpoint;
-    ``min_effect`` is the minimum effect size of interest, an absolute increase of
-    0.05 in class recall at a matched computational budget.
-    """
-
-    noninferiority_margin: float
-    k_max: int
-    min_effect: float = 0.05
-
-    def __post_init__(self) -> None:
-        if not np.isfinite(self.noninferiority_margin) or self.noninferiority_margin < 0:
-            raise ValueError("noninferiority_margin must be finite and non-negative")
-        if not isinstance(self.k_max, Integral) or isinstance(self.k_max, bool) or self.k_max < 1:
-            raise ValueError("k_max must be a positive integer")
-        if not np.isfinite(self.min_effect) or not 0 <= self.min_effect <= 1:
-            raise ValueError("min_effect must lie in [0, 1]")
 
 
 def run_spec(
@@ -98,33 +75,6 @@ def _row(label: str, budget: int, result: NestedResult) -> dict[str, Any]:
         "constraints_met": bool(result.endpoint["constraints_met"]) if result.endpoint else None,
         "endpoint": result.endpoint["endpoint"] if result.endpoint else float("nan"),
     }
-
-
-@dataclass
-class ComparisonTable:
-    """Rows keyed by (method, budget) - the shape Section 10's plot needs."""
-
-    rows: list[dict[str, Any]] = field(default_factory=list)
-    comparisons: list[dict[str, Any]] = field(default_factory=list)
-    pairs: list[BudgetPair] = field(default_factory=list)
-    results: dict[tuple[str, int], NestedResult] = field(default_factory=dict)
-
-    def to_markdown(self, columns: Sequence[str] | None = None) -> str:
-        cols = list(columns) if columns else [
-            "method", "budget", "model_fits", "wall_clock_seconds",
-            "mean_outer_loss", "class_recall", "mean_selected_size",
-            "false_selections", "mean_pairwise_jaccard", "constraints_met",
-        ]
-        head = "| " + " | ".join(cols) + " |"
-        rule = "| " + " | ".join("---" for _ in cols) + " |"
-        lines = [head, rule]
-        for r in self.rows:
-            vals = []
-            for c in cols:
-                v = r.get(c)
-                vals.append(f"{v:.4g}" if isinstance(v, float) else str(v))
-            lines.append("| " + " | ".join(vals) + " |")
-        return "\n".join(lines)
 
 
 def matched_compute_comparison(
