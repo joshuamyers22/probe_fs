@@ -47,3 +47,14 @@ def test_estimation_validation_does_not_depend_on_fitting_adapters() -> None:
         if isinstance(node, ast.ImportFrom) and node.module
     }
     assert modules.isdisjoint({"learners", "importance"})
+
+
+def test_nested_result_models_do_not_depend_on_evaluation_runner() -> None:
+    path = Path("src/pgfs/nested_models.py")
+    tree = ast.parse(path.read_text())
+    modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert "nested" not in modules

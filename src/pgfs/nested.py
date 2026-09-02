@@ -23,7 +23,6 @@ Two guardrails from Section 9 are enforced in code rather than left to disciplin
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np
@@ -34,119 +33,16 @@ from .learners import FitCounter, evaluate_player_set
 from .metrics import (
     SignalClasses,
     primary_endpoint,
-    selection_frequency,
-    selection_report,
-    stability_report,
 )
+from .nested_models import NestedResult, OuterFoldResult
 from .players import Players, derive_seed
-from .selection import KSelection, choose_k_by_inner_cv, make_cv
+from .selection import choose_k_by_inner_cv, make_cv
 
 __all__ = ["NestedResult", "OuterFoldResult", "finalize_for_deployment", "nested_evaluate"]
 
 OUTER_CV_SEED_OFFSET = 104_729
 FINAL_FIT_KEY = 22
 DEPLOYMENT_KEY = 9_999
-
-
-@dataclass
-class OuterFoldResult:
-    fold: int
-    k_chosen: int
-    selected: tuple[int, ...]
-    selected_names: tuple[str, ...]
-    outer_loss: float
-    outer_loss_all_features: float
-    k_selection: KSelection
-    ranking: tuple[int, ...]
-    gated_score: np.ndarray
-    raw_score: np.ndarray
-    context_sd: np.ndarray
-    split_sd: np.ndarray
-
-    def as_dict(self) -> dict[str, Any]:
-        return {
-            "fold": self.fold,
-            "k_chosen": self.k_chosen,
-            "selected": list(self.selected_names),
-            "outer_loss": self.outer_loss,
-            "outer_loss_all_features": self.outer_loss_all_features,
-            "k_selection": self.k_selection.as_dict(),
-        }
-
-
-@dataclass
-class NestedResult:
-    """Everything Section 14 asks to be reported, and nothing it forbids."""
-
-    spec: dict[str, Any]
-    folds: list[OuterFoldResult]
-    players: Players
-    counter: FitCounter = field(default_factory=FitCounter)
-    signal_classes: SignalClasses | None = None
-    endpoint: dict[str, Any] | None = None
-
-    @property
-    def outer_losses(self) -> np.ndarray:
-        return np.array([f.outer_loss for f in self.folds], dtype=float)
-
-    @property
-    def outer_losses_all_features(self) -> np.ndarray:
-        return np.array([f.outer_loss_all_features for f in self.folds], dtype=float)
-
-    @property
-    def per_fold_sets(self) -> list[tuple[int, ...]]:
-        return [f.selected for f in self.folds]
-
-    def mean_outer_loss(self) -> float:
-        return float(self.outer_losses.mean())
-
-    def se_outer_loss(self) -> float:
-        n = len(self.folds)
-        return float(self.outer_losses.std(ddof=1) / np.sqrt(n)) if n > 1 else 0.0
-
-    def stability(self) -> dict[str, float]:
-        return stability_report(self.per_fold_sets, self.outer_losses)
-
-    def selection_frequency(self) -> dict[str, float]:
-        freq = selection_frequency(self.per_fold_sets, len(self.players))
-        return {self.players.names[j]: float(freq[j]) for j in range(len(self.players))}
-
-    def variability(self) -> dict[str, np.ndarray]:
-        """Context variability and split variability, kept separate (Section 14)."""
-        return {
-            "context_sd": np.mean([f.context_sd for f in self.folds], axis=0),
-            "split_sd": np.mean([f.split_sd for f in self.folds], axis=0),
-        }
-
-    def report(self) -> dict[str, Any]:
-        rep: dict[str, Any] = {
-            "spec": self.spec,
-            "main_results": {
-                "mean_outer_loss": self.mean_outer_loss(),
-                "se_outer_loss": self.se_outer_loss(),
-                "mean_outer_loss_all_features": float(self.outer_losses_all_features.mean()),
-                "mean_selected_size": float(np.mean([f.k_chosen for f in self.folds])),
-                **self.counter.as_dict(),
-            },
-            "stability": self.stability(),
-            "folds": [f.as_dict() for f in self.folds],
-        }
-        if self.signal_classes is not None:
-            per_fold = [
-                selection_report(f.selected, self.signal_classes) for f in self.folds
-            ]
-            rep["main_results"]["mean_class_recall"] = float(
-                np.mean([r["class_recall"] for r in per_fold])
-            )
-            rep["main_results"]["mean_false_selections"] = float(
-                np.mean([r["n_outside_classes"] for r in per_fold])
-            )
-            rep["main_results"]["mean_redundant_selections"] = float(
-                np.mean([r["n_redundant"] for r in per_fold])
-            )
-        if self.endpoint is not None:
-            rep["primary_endpoint"] = self.endpoint
-        return rep
 
 
 def _aggregate_endpoint(
