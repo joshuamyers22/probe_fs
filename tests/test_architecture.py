@@ -49,6 +49,17 @@ def test_estimation_validation_does_not_depend_on_fitting_adapters() -> None:
     assert modules.isdisjoint({"learners", "importance"})
 
 
+def test_importance_policy_does_not_depend_on_fitting_or_sampling_adapters() -> None:
+    path = Path("src/pgfs/importance_policy.py")
+    tree = ast.parse(path.read_text())
+    modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert modules.isdisjoint({"contexts", "estimation_data", "importance", "learners"})
+
+
 def test_nested_result_models_do_not_depend_on_evaluation_runner() -> None:
     path = Path("src/pgfs/nested_models.py")
     tree = ast.parse(path.read_text())

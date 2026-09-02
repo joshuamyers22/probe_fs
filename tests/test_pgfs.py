@@ -70,6 +70,11 @@ def test_hard_and_none_gates():
     assert np.allclose(apply_gate(delta, tau, "none"), delta)
 
 
+def test_gate_rejects_unknown_policy():
+    with pytest.raises(ValueError, match="unknown gate"):
+        apply_gate(np.array([1.0]), np.array([0.5]), "experimental")
+
+
 def test_ranking_breaks_ties_by_player_order():
     assert rank_players(np.array([0.5, 0.5, 0.9, 0.5])) == (2, 0, 1, 3)
 

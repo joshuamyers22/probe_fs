@@ -39,9 +39,12 @@ import numpy as np
 from .config import MethodSpec
 from .contexts import sample_context
 from .estimation_data import validate_estimation_data
+from .importance_policy import apply_gate, rank_players
+from .importance_policy import fit_signature as _fit_signature
+from .importance_policy import gate_all as _gate_all
 from .learners import FitCounter, evaluate_player_set
 from .players import Players, derive_rng, derive_seed
-from .shadows import shadow_blocks, shadow_threshold
+from .shadows import shadow_blocks
 
 __all__ = ["ImportanceResult", "apply_gate", "estimate_importance", "rank_players"]
 
@@ -144,73 +147,6 @@ class ImportanceResult:
             }
             for j in sorted(range(self.n_players), key=lambda j: rank_of[j])
         ]
-
-
-def rank_players(score: np.ndarray) -> tuple[int, ...]:
-    """Decreasing score, exact ties broken by original player order (Section 7)."""
-    return tuple(sorted(range(len(score)), key=lambda j: (-float(score[j]), j)))
-
-
-def _fit_signature(spec: MethodSpec) -> tuple[tuple[str, str], ...]:
-    """Fields that determine splits, contexts, learner fits, and shadow draws."""
-    values = {
-        "learner": repr(spec.learner),
-        "loss": spec.loss,
-        "context_kind": spec.context_kind,
-        "n_contexts": spec.effective_n_contexts,
-        "n_importance_splits": spec.n_importance_splits,
-        "importance_val_fraction": spec.importance_val_fraction,
-        # Keep the configured value even for gate="none", so a gated result may
-        # be regated to the raw comparator without appearing to change design.
-        "n_shadows": spec.n_shadows,
-        "seed": spec.seed,
-    }
-    return tuple(sorted((key, repr(value)) for key, value in values.items()))
-
-
-def apply_gate(delta: np.ndarray, tau: np.ndarray, gate: str) -> np.ndarray:
-    """Section 7's soft gate, plus the Section 13 sensitivity variants.
-
-    soft: ``max(0, Delta - max(0, tau))``. The inner ``max(0, tau)`` means a
-    *negative* threshold - shadows that actively hurt - never credits a player
-    with more than its own raw contribution; the outer ``max(0, .)`` means a
-    player that merely matches its probe contributes nothing rather than a
-    negative amount.
-    """
-    floor = np.maximum(0.0, np.asarray(tau, dtype=float))
-    delta = np.asarray(delta, dtype=float)
-    if gate == "none":
-        return delta
-    if gate == "soft":
-        return np.maximum(0.0, delta - floor)
-    if gate == "hard":
-        return np.where(delta > floor, delta, 0.0)
-    raise ValueError(f"unknown gate {gate!r}")
-
-
-def _gate_all(
-    delta: np.ndarray, shadow_delta: np.ndarray, spec: MethodSpec
-) -> tuple[np.ndarray, np.ndarray]:
-    """Compute ``tau`` at the configured scope, then gate. No model fits here."""
-    if not spec.uses_shadows or shadow_delta.size == 0:
-        tau = np.zeros_like(delta)
-        return tau, apply_gate(delta, tau, spec.gate)
-
-    q, method = spec.shadow_quantile, spec.quantile_method
-    if spec.shadow_scope == "local":
-        # One threshold per (j, t, b): conditioning-position matched (Section 6).
-        tau = np.quantile(shadow_delta, q, axis=3, method=method)
-    elif spec.shadow_scope == "global":
-        # Section 12 comparator: one threshold per split, pooled over players and
-        # contexts, so a player's probe is no longer matched to its position.
-        p, T, B, _ = shadow_delta.shape
-        tau = np.empty((p, T, B), dtype=float)
-        for b in range(B):
-            tau[:, :, b] = shadow_threshold(shadow_delta[:, :, b, :].ravel(), q, method)
-    else:  # pragma: no cover - validated in MethodSpec
-        raise ValueError(f"unknown shadow_scope {spec.shadow_scope!r}")
-
-    return tau, apply_gate(delta, tau, spec.gate)
 
 
 def _split_indices(
