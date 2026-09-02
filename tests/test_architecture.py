@@ -92,3 +92,14 @@ def test_nested_result_models_do_not_depend_on_evaluation_runner() -> None:
         if isinstance(node, ast.ImportFrom) and node.module
     }
     assert "nested" not in modules
+
+
+def test_knockoff_policy_does_not_depend_on_baseline_or_evaluation_workflows() -> None:
+    path = Path("src/pgfs/knockoffs.py")
+    tree = ast.parse(path.read_text())
+    modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert modules.isdisjoint({"baselines", "baseline_evaluation", "learners"})

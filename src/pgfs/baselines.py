@@ -26,11 +26,12 @@ from collections.abc import Sequence
 
 import numpy as np
 from sklearn.feature_selection import RFECV
-from sklearn.linear_model import Lasso, LassoCV, LogisticRegression, lasso_path
+from sklearn.linear_model import Lasso, LassoCV, LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
 from .baseline_evaluation import BaselineResult, Selector, run_baseline_nested
 from .config import MethodSpec
+from .knockoffs import select_knockoff_columns
 from .learners import evaluate_player_set
 from .players import Players, derive_rng
 from .selection import make_cv
@@ -50,24 +51,30 @@ __all__ = [
 
 STABILITY_RNG_KEY = 31
 BORUTA_RNG_KEY = 32
-KNOCKOFF_RNG_KEY = 33
 
 
 # --------------------------------------------------------------------------
 # helpers
 # --------------------------------------------------------------------------
-def _players_from_columns(players: Players, selected_cols: Sequence[int]) -> tuple[int, ...]:
+def _players_from_columns(
+    players: Players, selected_cols: Sequence[int]
+) -> tuple[int, ...]:
     """A block player counts as selected if any of its columns was selected."""
     chosen = {int(column) for column in selected_cols}
-    return tuple(j for j in range(len(players)) if chosen.intersection(players.columns[j]))
+    return tuple(
+        j for j in range(len(players)) if chosen.intersection(players.columns[j])
+    )
 
 
 def _l1_model(task: str, seed: int, alpha: float | None = None):
     if task == "regression":
         return Lasso(alpha=alpha if alpha else 0.05, random_state=seed, max_iter=5000)
     return LogisticRegression(
-        penalty="l1", solver="liblinear",
-        C=1.0 / max(alpha or 0.05, 1e-6), random_state=seed, max_iter=2000,
+        penalty="l1",
+        solver="liblinear",
+        C=1.0 / max(alpha or 0.05, 1e-6),
+        random_state=seed,
+        max_iter=2000,
     )
 
 
@@ -102,7 +109,9 @@ def select_learner_native(X, y, players: Players, spec: MethodSpec, seed: int) -
     return _players_from_columns(players, nz) or tuple(range(len(players)))
 
 
-def select_rfecv(X, y, players: Players, spec: MethodSpec, seed: int, min_features: int = 1) -> tuple:
+def select_rfecv(
+    X, y, players: Players, spec: MethodSpec, seed: int, min_features: int = 1
+) -> tuple:
     """Recursive feature elimination with cross-validation (Section 12)."""
     Xs = StandardScaler().fit_transform(X)
     estimator = _l1_model(spec.task, seed, alpha=0.01)
@@ -119,7 +128,11 @@ def select_rfecv(X, y, players: Players, spec: MethodSpec, seed: int, min_featur
 
 
 def select_stability_selection(
-    X, y, players: Players, spec: MethodSpec, seed: int,
+    X,
+    y,
+    players: Players,
+    spec: MethodSpec,
+    seed: int,
     n_subsamples: int = 50,
     subsample_fraction: float = 0.5,
     alpha: float = 0.05,
@@ -156,8 +169,13 @@ def select_stability_selection(
         for tr, va in cv.split(X, y if spec.task != "regression" else None):
             losses.append(
                 evaluate_player_set(
-                    spec.learner, spec.loss_fn,
-                    X[np.ix_(tr, cols)], y[tr], X[np.ix_(va, cols)], y[va], seed=seed,
+                    spec.learner,
+                    spec.loss_fn,
+                    X[np.ix_(tr, cols)],
+                    y[tr],
+                    X[np.ix_(va, cols)],
+                    y[va],
+                    seed=seed,
                 )
             )
         mean = float(np.mean(losses))
@@ -169,8 +187,13 @@ def select_stability_selection(
 
 
 def select_boruta(
-    X, y, players: Players, spec: MethodSpec, seed: int,
-    n_iter: int = 20, alpha: float = 0.05,
+    X,
+    y,
+    players: Players,
+    spec: MethodSpec,
+    seed: int,
+    n_iter: int = 20,
+    alpha: float = 0.05,
 ) -> tuple:
     """A Boruta-style shadow-feature baseline (Section 12).
 
@@ -190,7 +213,9 @@ def select_boruta(
     p_cols = X.shape[1]
     hits = np.zeros(p_cols, dtype=int)
 
-    forest_cls = RandomForestRegressor if spec.task == "regression" else RandomForestClassifier
+    forest_cls = (
+        RandomForestRegressor if spec.task == "regression" else RandomForestClassifier
+    )
     for it in range(n_iter):
         shadow = np.column_stack([rng.permutation(X[:, c]) for c in range(p_cols)])
         Z = np.hstack([X, shadow])
@@ -206,8 +231,13 @@ def select_boruta(
 
 
 def select_knockoffs(
-    X, y, players: Players, spec: MethodSpec, seed: int,
-    target_fdr: float = 0.1, return_meta: bool = False,
+    X,
+    y,
+    players: Players,
+    spec: MethodSpec,
+    seed: int,
+    target_fdr: float = 0.1,
+    return_meta: bool = False,
 ) -> tuple:
     """Model-X knockoffs with equicorrelated Gaussian construction (Section 12).
 
@@ -218,46 +248,10 @@ def select_knockoffs(
     knockoff filter controls FDR at ``target_fdr``. None of that transfers to the
     gated method (Section 15).
     """
-    rng = derive_rng(seed, KNOCKOFF_RNG_KEY)
-    Xs = StandardScaler().fit_transform(X)
-    n, d = Xs.shape
-
-    Sigma = np.corrcoef(Xs, rowvar=False)
-    Sigma = np.atleast_2d(Sigma) + 1e-6 * np.eye(d)
-    eig_min = float(np.linalg.eigvalsh(Sigma).min())
-    s = np.full(d, min(1.0, max(2.0 * eig_min - 1e-8, 1e-8)))
-
-    Sigma_inv = np.linalg.pinv(Sigma)
-    D = np.diag(s)
-    mu_k = Xs - Xs @ Sigma_inv @ D
-    V = 2.0 * D - D @ Sigma_inv @ D
-    # Nearest PSD square root, guarding the numerically ragged tail.
-    w, Q = np.linalg.eigh((V + V.T) / 2.0)
-    V_half = Q @ np.diag(np.sqrt(np.clip(w, 0.0, None))) @ Q.T
-    X_tilde = mu_k + rng.normal(size=(n, d)) @ V_half
-
-    Z = np.hstack([Xs, X_tilde])
-    y_num = np.asarray(y, dtype=float)
-    alphas, coefs, _ = lasso_path(Z, y_num, n_alphas=60, eps=1e-3)
-    entry = np.zeros(2 * d, dtype=float)
-    nonzero = np.abs(coefs) > 1e-10
-    for j in range(2 * d):
-        idx = np.flatnonzero(nonzero[j])
-        entry[j] = alphas[idx[0]] if idx.size else 0.0
-
-    W = entry[:d] - entry[d:]
-    thresholds = np.sort(np.abs(W[W != 0]))
-    T = np.inf
-    for t in thresholds:
-        num = 1 + np.sum(W <= -t)
-        den = max(1, np.sum(W >= t))
-        if num / den <= target_fdr:
-            T = t
-            break
-    cols = np.flatnonzero(W >= T) if np.isfinite(T) else np.array([], dtype=int)
+    cols, metadata = select_knockoff_columns(X, y, seed, target_fdr)
     chosen = _players_from_columns(players, cols)
     if return_meta:
-        return chosen, {"threshold": float(T), "min_eigenvalue": eig_min, "target_fdr": target_fdr}
+        return chosen, metadata
     return chosen
 
 
