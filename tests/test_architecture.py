@@ -38,6 +38,29 @@ def test_experiment_models_do_not_depend_on_experiment_runner() -> None:
     assert "experiments" not in modules
 
 
+def test_experiment_decisions_do_not_depend_on_fitting_or_simulation_runners() -> None:
+    path = Path("src/pgfs/experiment_decisions.py")
+    tree = ast.parse(path.read_text())
+    modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert modules.isdisjoint({"experiments", "importance", "nested", "simulate"})
+
+
+def test_experiment_runner_does_not_define_decision_policy() -> None:
+    tree = ast.parse(Path("src/pgfs/experiments.py").read_text())
+    functions = {
+        node.name
+        for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    assert functions.isdisjoint(
+        {"decision_criteria", "redundancy_check", "_verdict_sentence"}
+    )
+
+
 def test_estimation_validation_does_not_depend_on_fitting_adapters() -> None:
     path = Path("src/pgfs/estimation_data.py")
     tree = ast.parse(path.read_text())

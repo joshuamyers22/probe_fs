@@ -19,10 +19,9 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
-
 from .budget import budget_ladder
 from .config import MethodSpec
+from .experiment_decisions import decision_criteria, redundancy_check
 from .experiment_models import ComparisonTable, StudyConstraints
 from .metrics import compare_primary_endpoint
 from .nested import NestedResult, nested_evaluate
@@ -34,6 +33,7 @@ __all__ = [
     "decision_criteria",
     "direct_alternative_specs",
     "matched_compute_comparison",
+    "redundancy_check",
     "run_spec",
 ]
 
@@ -47,7 +47,10 @@ def run_spec(
 ) -> NestedResult:
     """Nested evaluation of one frozen spec on one simulated dataset."""
     return nested_evaluate(
-        data.X, data.y, data.players, spec,
+        data.X,
+        data.y,
+        data.players,
+        spec,
         n_outer_folds=n_outer_folds,
         n_inner_folds=n_inner_folds,
         signal_classes=data.signal_classes,
@@ -72,7 +75,9 @@ def _row(label: str, budget: int, result: NestedResult) -> dict[str, Any]:
         "model_fits": main["model_fits_total"],
         "wall_clock_seconds": main["wall_clock_seconds"],
         "mean_pairwise_jaccard": stab["mean_pairwise_jaccard"],
-        "constraints_met": bool(result.endpoint["constraints_met"]) if result.endpoint else None,
+        "constraints_met": bool(result.endpoint["constraints_met"])
+        if result.endpoint
+        else None,
         "endpoint": result.endpoint["endpoint"] if result.endpoint else float("nan"),
     }
 
@@ -93,13 +98,19 @@ def matched_compute_comparison(
     contexts). Predicted and measured fit counts and wall-clock time are both
     reported, since a predicted match that did not materialise is not a match.
     """
-    table = ComparisonTable(pairs=budget_ladder(base_spec, len(data.players), gated_contexts))
+    table = ComparisonTable(
+        pairs=budget_ladder(base_spec, len(data.players), gated_contexts)
+    )
 
     for pair in table.pairs:
         if verbose:
             print(pair.describe(), flush=True)
-        gated_res = run_spec(data, pair.gated, constraints, n_outer_folds, n_inner_folds)
-        ungated_res = run_spec(data, pair.ungated, constraints, n_outer_folds, n_inner_folds)
+        gated_res = run_spec(
+            data, pair.gated, constraints, n_outer_folds, n_inner_folds
+        )
+        ungated_res = run_spec(
+            data, pair.ungated, constraints, n_outer_folds, n_inner_folds
+        )
 
         table.results[("gated", pair.budget_index)] = gated_res
         table.results[("ungated", pair.budget_index)] = ungated_res
@@ -116,7 +127,8 @@ def matched_compute_comparison(
         measured_hi = max(g_row["model_fits"], u_row["model_fits"])
         measured_imbalance = (
             abs(g_row["model_fits"] - u_row["model_fits"]) / measured_hi
-            if measured_hi else 0.0
+            if measured_hi
+            else 0.0
         )
         budget_matched = bool(pair.feasible and measured_imbalance <= 0.05)
         endpoint_valid = bool(cmp["comparison_valid"])
@@ -164,7 +176,9 @@ def direct_alternative_specs(base_spec: MethodSpec) -> dict[str, MethodSpec]:
             gate="soft", context_kind="full", label="LOCO-gated"
         ),
         "global_shadow": base_spec.replace(
-            gate="soft", context_kind="permutation", shadow_scope="global",
+            gate="soft",
+            context_kind="permutation",
+            shadow_scope="global",
             label="global-shadow",
         ),
     }
@@ -191,128 +205,3 @@ def context_ablation(
         table.results[(name, 0)] = res
         table.rows.append(_row(name, 0, res))
     return table
-
-
-def decision_criteria(
-    comparison: ComparisonTable,
-    constraints: StudyConstraints,
-    ablation: ComparisonTable | None = None,
-) -> dict[str, Any]:
-    """Section 16, applied to the numbers.
-
-    Returns a verdict dictionary rather than a single boolean, because Section 16
-    contains four distinct rules with different consequences: discontinue; adopt
-    the simpler method; downgrade to exploratory; and check for redundancy against
-    an existing baseline.
-    """
-    cmps = comparison.comparisons
-    n_budgets = len(cmps)
-    # A budget where either arm broke a Section 11 constraint yields no endpoint
-    # value, so it can neither support nor refute the minimum effect. Folding such
-    # budgets into "did not clear" would let a comparator's constraint violation
-    # count as evidence against gating.
-    valid = [c for c in cmps if c["comparison_valid"]]
-    invalid = [c for c in cmps if not c["comparison_valid"]]
-    cleared = [c for c in valid if c["meets_minimum_effect"]]
-
-    verdict: dict[str, Any] = {
-        "n_budgets": n_budgets,
-        "n_valid_comparisons": len(valid),
-        "inconclusive_budgets": {c["budget"]: c["reason"] for c in invalid},
-        "budgets_clearing_min_effect": [c["budget"] for c in cleared],
-        "recall_differences": {c["budget"]: c["difference"] for c in cmps},
-        "min_effect": constraints.min_effect,
-    }
-
-    # Rule 1: discontinue if gating never clears the minimum effect - but only on
-    # the evidence of budgets that produced a valid endpoint comparison.
-    verdict["discontinue_broad_study"] = bool(valid and not cleared)
-    verdict["inconclusive"] = bool(n_budgets > 0 and not valid)
-
-    # Rule 3: an advantage at some but not all valid budgets is exploratory, not
-    # confirmatory - the same logic Section 16 applies to a single favourable
-    # tuning choice.
-    verdict["exploratory_only"] = bool(len(valid) > 1 and 0 < len(cleared) < len(valid))
-    verdict["confirmatory"] = bool(valid and len(cleared) == len(valid))
-
-    # Rule 2: prefer the simpler full-conditioning method when it matches or beats
-    # sampled partial-context gating.
-    if ablation is not None:
-        by_method = {r["method"]: r for r in ablation.rows}
-        gated = by_method.get("gated_permutation")
-        loco = by_method.get("loco_gated")
-        if gated and loco:
-            loco_wins = bool(
-                loco["class_recall"] >= gated["class_recall"]
-                and loco["mean_outer_loss"] <= gated["mean_outer_loss"]
-                + constraints.noninferiority_margin
-            )
-            verdict["adopt_full_conditioning"] = loco_wins
-            verdict["ablation"] = {
-                "gated_permutation_recall": gated["class_recall"],
-                "loco_gated_recall": loco["class_recall"],
-                "gated_permutation_loss": gated["mean_outer_loss"],
-                "loco_gated_loss": loco["mean_outer_loss"],
-                "gated_permutation_fits": gated["model_fits"],
-                "loco_gated_fits": loco["model_fits"],
-            }
-
-    verdict["summary"] = _verdict_sentence(verdict)
-    return verdict
-
-
-def _verdict_sentence(v: dict[str, Any]) -> str:
-    if v.get("inconclusive"):
-        return (
-            "No budget produced a valid endpoint comparison - at least one arm broke a "
-            "Section 11 constraint everywhere ("
-            + ", ".join(f"C{b}: {r}" for b, r in v["inconclusive_budgets"].items())
-            + "). Resolve the constraints before applying the Section 16 decision rule."
-        )
-    if v.get("discontinue_broad_study"):
-        return (
-            "Gating did not clear the minimum effect at any budget: "
-            "Section 16 says discontinue the broad methodology study."
-        )
-    if v.get("adopt_full_conditioning"):
-        return (
-            "Full-conditioning gated LOCO matched or exceeded sampled partial-context "
-            "gating: adopt the simpler full-conditioning method as the primary contribution."
-        )
-    if v.get("exploratory_only"):
-        return (
-            "Gating cleared the minimum effect at some but not all budgets: "
-            "treat the advantage as exploratory rather than confirmatory."
-        )
-    if v.get("confirmatory"):
-        return "Gating cleared the minimum effect at every budget tested."
-    return "No budgets evaluated."
-
-
-def redundancy_check(
-    result_a: NestedResult, result_b: NestedResult, jaccard_threshold: float = 0.9
-) -> dict[str, Any]:
-    """Section 16's last rule: is this method just an existing baseline in disguise?
-
-    If the selected sets nearly coincide, the burden shifts to showing an advantage
-    in stability, predictive loss, interpretability or computation before claiming
-    a separate contribution.
-    """
-    from .metrics import jaccard
-
-    overlaps = [
-        jaccard(a, b) for a, b in zip(result_a.per_fold_sets, result_b.per_fold_sets)
-    ]
-    mean_overlap = float(np.mean(overlaps)) if overlaps else float("nan")
-    return {
-        "mean_fold_jaccard": mean_overlap,
-        "near_duplicate": bool(mean_overlap >= jaccard_threshold),
-        "loss_advantage": float(result_b.mean_outer_loss() - result_a.mean_outer_loss()),
-        "stability_advantage": float(
-            result_a.stability()["mean_pairwise_jaccard"]
-            - result_b.stability()["mean_pairwise_jaccard"]
-        ),
-        "compute_ratio": float(
-            result_a.counter.total / max(1, result_b.counter.total)
-        ),
-    }
