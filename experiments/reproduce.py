@@ -38,6 +38,31 @@ def unpack(output):
             raise ValueError(f"Wrong checkpoint count: {study['id']}")
 
 
+def check_summary(actual, expected, label):
+    """Identify differing leaves instead of hiding failures behind a study name."""
+    differences = []
+
+    def compare(a, b, path):
+        if type(a) is not type(b):
+            differences.append(f"{path}: types {type(a).__name__} != {type(b).__name__}")
+        elif isinstance(a, dict):
+            if a.keys() != b.keys():
+                differences.append(f"{path}: keys differ")
+            for key in sorted(a.keys() & b.keys()):
+                compare(a[key], b[key], f"{path}.{key}")
+        elif isinstance(a, list):
+            if len(a) != len(b):
+                differences.append(f"{path}: lengths {len(a)} != {len(b)}")
+            for i, (left, right) in enumerate(zip(a, b)):
+                compare(left, right, f"{path}[{i}]")
+        elif a != b:
+            differences.append(f"{path}: actual={a!r}, recorded={b!r}")
+
+    compare(actual, expected, label)
+    if differences:
+        raise ValueError(f"Regenerated statistics differ ({len(differences)} leaves):\n" + "\n".join(differences[:12]))
+
+
 def reanalyze(output):
     """Write only into a new evidence copy; never edit the original results."""
     if output.exists():
@@ -49,36 +74,32 @@ def reanalyze(output):
         if study["kind"] == "paired":
             before = json.loads((directory / "paired-summary.json").read_text())
             execute(ROOT, "experiments/analyze_simulation_batch.py", "--output", str(directory))
-            if json.loads((directory / "paired-summary.json").read_text()) != before:
-                raise ValueError(f"Regenerated statistics differ: {study['id']}")
+            check_summary(json.loads((directory / "paired-summary.json").read_text()), before, study['id'])
             summaries[study["id"]] = {"pairs": sum(r["seeds"] for r in before), "valid": sum(r["valid"] for r in before)}
         elif study["kind"] == "contexts":
             before = {name: json.loads((directory / name).read_text()) for name in
                       ("paired-summary.json", "method-summary.json", "summary.json")}
             execute(ROOT, "experiments/analyze_context_controls.py", "--output", str(directory))
-            if any(json.loads((directory / name).read_text()) != expected for name, expected in before.items()):
-                raise ValueError("Regenerated context statistics differ")
+            for name, expected in before.items():
+                check_summary(json.loads((directory / name).read_text()), expected, f"contexts/{name}")
             summaries["contexts"] = before["summary.json"]
         elif study["kind"] == "pilot":
             from pgfs.study import summarize
             before = json.loads((directory / "aggregates.json").read_text())
             summarize(directory)
-            if json.loads((directory / "aggregates.json").read_text()) != before:
-                raise ValueError("Regenerated pilot aggregates differ")
+            check_summary(json.loads((directory / "aggregates.json").read_text()), before, "pilot")
             summaries["pilot"] = {"paired_cells": study["checkpoints"]}
         elif study["kind"] == "audit":
             from audit_endpoint import summarize
             before = json.loads((directory / "summary.json").read_text())
             config = json.loads((output / "results/expanded-simulation-v1/frozen-config.json").read_text())
             summarize(directory, config)
-            if json.loads((directory / "summary.json").read_text()) != before:
-                raise ValueError("Regenerated audit statistics differ")
+            check_summary(json.loads((directory / "summary.json").read_text()), before, "audit")
             summaries["audit"] = {"cells": before["cells"]}
     policy = output / "results/selection-rule-v1"
     before = json.loads((policy / "policy-summary.json").read_text())
     execute(ROOT, "experiments/analyze_selection_rules.py", "--output", str(policy))
-    if json.loads((policy / "policy-summary.json").read_text()) != before:
-        raise ValueError("Regenerated paired-policy statistics differ")
+    check_summary(json.loads((policy / "policy-summary.json").read_text()), before, "paired-policy")
     (output / "reanalysis-verification.json").write_text(json.dumps(summaries, indent=2, sort_keys=True)+"\n")
     print("All seven recorded study summaries and paired-policy statistics reproduced exactly without refitting.")
 
