@@ -1,0 +1,30 @@
+{
+  "all": {
+    "gated": {
+      "boundary_ties": 2,
+      "folds": 720,
+      "selected_size_five": 49,
+      "selected_zero_score": 2
+    },
+    "ungated": {
+      "boundary_ties": 0,
+      "folds": 720,
+      "selected_size_five": 50,
+      "selected_zero_score": 0
+    }
+  },
+  "valid": {
+    "gated": {
+      "boundary_ties": 0,
+      "folds": 420,
+      "selected_size_five": 45,
+      "selected_zero_score": 0
+    },
+    "ungated": {
+      "boundary_ties": 0,
+      "folds": 420,
+      "selected_size_five": 45,
+      "selected_zero_score": 0
+    }
+  }
+}

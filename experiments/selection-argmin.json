@@ -1,0 +1,86 @@
+{
+  "name": "selection-rule-v1-argmin",
+  "purpose": "Fresh-seed paired selection-rule sensitivity, with shared seeded feature order; exploratory, not confirmatory.",
+  "seeds": [
+    301,
+    302,
+    303,
+    304,
+    305,
+    306,
+    307,
+    308,
+    309,
+    310
+  ],
+  "budgets": [
+    2,
+    4
+  ],
+  "outer_folds": 3,
+  "inner_folds": 2,
+  "importance_splits": 1,
+  "shadows": 3,
+  "quantile": 0.9,
+  "simulation": {
+    "n": [
+      300,
+      1000,
+      3000
+    ],
+    "rho": [
+      0.5,
+      0.9
+    ],
+    "snr": [
+      0.25,
+      2.0
+    ],
+    "n_classes": 3,
+    "class_size": 2,
+    "n_null_blocks": 1,
+    "null_block_size": 3,
+    "n_independent_nulls": 6,
+    "candidate_k": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "noninferiority_margin": 0.05,
+    "k_max": 6,
+    "min_effect": 0.05,
+    "betas": [
+      1.0,
+      0.3,
+      0.15
+    ],
+    "feature_order": "seeded_permutation"
+  },
+  "public": {
+    "datasets": [],
+    "seeds": [
+      11
+    ],
+    "rows": 600,
+    "budgets": [
+      1,
+      2
+    ],
+    "candidate_k": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ]
+  },
+  "workers": 2,
+  "protocol_artifact_sha256": {
+    "docs/SELECTION_RULE_PLAN.md": "586eb6bf4be0ba73fe5d913da6e44561dcf49961bac805bdc31dcd81865c6387"
+  },
+  "one_se_rule": false
+}

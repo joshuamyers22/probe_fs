@@ -10,6 +10,8 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -25,4 +27,21 @@ jobs:
       - run: uv sync --frozen --all-extras
       - run: uv run ruff check .
       - run: uv run pytest -q
+      - run: uv run python experiments/reproduce.py verify
+      - if: matrix.python-version == '3.12'
+        run: uv run python experiments/reproduce.py smoke --output artifacts/ci-smoke
       - run: uv build
+      - if: matrix.python-version == '3.12'
+        run: uv run python experiments/reproduce.py analyze --output artifacts/ci-reanalysis
+      - if: matrix.python-version == '3.12'
+        run: uv run python experiments/build_benchmark.py
+      - if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: probe-fs-reproducibility
+          path: |
+            artifacts/probe-fs-reproducibility-v1.zip
+            artifacts/probe-fs-reproducibility-v1.sha256
+            artifacts/ci-smoke/smoke-verification.json
+            artifacts/ci-reanalysis/reanalysis-verification.json
+          if-no-files-found: error

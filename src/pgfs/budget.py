@@ -69,8 +69,10 @@ def expected_base_fits(n_players: int, n_contexts: int, context_kind: str = "per
         if c == 1:
             total += 1.0
         else:
-            # c * (1 - (1 - 1/c)^T), computed in log space for large c.
-            total += c * (1.0 - math.exp(T * math.log1p(-1.0 / c)))
+            # expm1 preserves the small difference from one when C(p,s) is
+            # large. Subtracting exp(...) from 1 loses whole context fits at
+            # realistic public-data widths (e.g. p=81 or p=90).
+            total += -c * math.expm1(T * math.log1p(-1.0 / c))
     return total
 
 

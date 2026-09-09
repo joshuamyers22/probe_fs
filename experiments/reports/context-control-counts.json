@@ -1,0 +1,25 @@
+{
+  "contrasts": {
+    "global": {
+      "clears_minimum_effect": 17,
+      "compute_matched": 240,
+      "local_losses": 15,
+      "local_wins": 17,
+      "paired_designs": 240,
+      "ties": 114,
+      "valid": 146
+    },
+    "loco-matched": {
+      "clears_minimum_effect": 33,
+      "compute_matched": 240,
+      "local_losses": 26,
+      "local_wins": 33,
+      "paired_designs": 240,
+      "ties": 63,
+      "valid": 122
+    }
+  },
+  "datasets": 120,
+  "evaluations": 960,
+  "model_fits": 1289472
+}

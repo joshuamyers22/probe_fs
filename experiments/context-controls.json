@@ -1,0 +1,73 @@
+{
+  "name": "context-controls-v1",
+  "purpose": "Bounded fresh-seed diagnostic of local versus global shadow thresholds and full-conditioning controls; one-SE primary; not confirmatory.",
+  "seeds": [
+    401,
+    402,
+    403,
+    404,
+    405,
+    406,
+    407,
+    408,
+    409,
+    410
+  ],
+  "outer_folds": 3,
+  "inner_folds": 2,
+  "importance_splits": 1,
+  "shadows": 3,
+  "quantile": 0.9,
+  "simulation": {
+    "n": [
+      300,
+      1000,
+      3000
+    ],
+    "rho": [
+      0.5,
+      0.9
+    ],
+    "snr": [
+      0.25,
+      2.0
+    ],
+    "n_classes": 3,
+    "class_size": 2,
+    "n_null_blocks": 1,
+    "null_block_size": 3,
+    "n_independent_nulls": 6,
+    "candidate_k": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "noninferiority_margin": 0.05,
+    "k_max": 6,
+    "min_effect": 0.05,
+    "betas": [
+      1.0,
+      0.3,
+      0.15
+    ],
+    "feature_order": "seeded_permutation"
+  },
+  "workers": 4,
+  "protocol_artifact_sha256": {
+    "docs/CONTEXT_CONTROLS_PLAN.md": "e77e769baa4e2c089d609d787767dfa92b940d674e7588cf4846d9f4e9d92267"
+  },
+  "one_se_rule": true,
+  "rungs": [
+    {
+      "contexts": 2,
+      "loco_splits": 2
+    },
+    {
+      "contexts": 4,
+      "loco_splits": 4
+    }
+  ]
+}

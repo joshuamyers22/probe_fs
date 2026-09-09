@@ -1,0 +1,12 @@
+{
+  "version": "reproducibility-v1",
+  "studies": [
+    {"id": "pilot", "kind": "pilot", "directory": "results/pilot-v1", "checkpoint_glob": "cell-*.json", "checkpoints": 22, "source_archive": "results/expanded-simulation-v1/source-snapshot.zip", "report": "docs/PILOT_RESULTS.md"},
+    {"id": "expanded", "kind": "paired", "directory": "results/expanded-simulation-v1", "checkpoint_glob": "seed-*/cell-*.json", "checkpoints": 240, "source_archive": "results/expanded-simulation-v1/source-snapshot.zip", "report": "docs/EXPANDED_SIMULATION_RESULTS.md"},
+    {"id": "audit", "kind": "audit", "directory": "results/endpoint-audit-v1", "checkpoint_glob": "audit-*.json", "checkpoints": 240, "source_archive": "results/expanded-simulation-v1/source-snapshot.zip", "report": "docs/ENDPOINT_AUDIT_RESULTS.md"},
+    {"id": "revised", "kind": "paired", "directory": "results/revised-simulation-v1", "checkpoint_glob": "seed-*/cell-*.json", "checkpoints": 240, "source_archive": "results/revised-simulation-v1/source-snapshot.zip", "report": "docs/REVISED_SIMULATION_RESULTS.md"},
+    {"id": "one-se", "kind": "paired", "directory": "results/selection-rule-v1/one-se", "checkpoint_glob": "seed-*/cell-*.json", "checkpoints": 240, "source_archive": "results/selection-rule-v1/one-se/source-snapshot.zip", "report": "docs/SELECTION_RULE_RESULTS.md"},
+    {"id": "argmin", "kind": "paired", "directory": "results/selection-rule-v1/argmin", "checkpoint_glob": "seed-*/cell-*.json", "checkpoints": 240, "source_archive": "results/selection-rule-v1/argmin/source-snapshot.zip", "report": "docs/SELECTION_RULE_RESULTS.md"},
+    {"id": "contexts", "kind": "contexts", "directory": "results/context-controls-v1", "checkpoint_glob": "seed-*/cell-*.json", "checkpoints": 960, "source_archive": "results/context-controls-v1/source-snapshot.zip", "report": "docs/CONTEXT_CONTROLS_RESULTS.md"}
+  ]
+}
