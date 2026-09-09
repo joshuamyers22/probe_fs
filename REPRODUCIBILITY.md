@@ -49,8 +49,20 @@ original results. The audit is reaggregated from recorded post-hoc rescores.
 `reanalysis-verification.json` records success.
 
 Summary numbers, including averages of recorded timing inputs, are checked for
-exact equality. Plot bytes can vary with platform/fonts. Numerical differences
-fail explicitly instead of silently replacing published values.
+exact equality by default. Plot bytes can vary with platform/fonts. Linux CI
+exposed confidence-interval differences of about 3e-17 from the recorded macOS
+values. For cross-platform summary regeneration, opt into:
+
+```sh
+uv run python experiments/reproduce.py analyze --allow-roundoff --output artifacts/reanalysis-portable
+```
+
+This permits finite floating-point differences within relative tolerance 1e-12
+or absolute tolerance 1e-14, and lists every accepted difference with its path and
+both values in `reanalysis-verification.json`. Counts, types, categories and
+missing values must still match exactly; evidence hashes remain exact. Larger
+differences fail explicitly. The original recorded evidence is never overwritten.
+These tolerances apply only to regenerated summaries, not refitted outcomes.
 
 ## Exercise fitting, analysis and resume
 
@@ -115,7 +127,8 @@ it rejects missing checkpoints or changed recorded inputs. Users need not refres
 shortcuts. `make check` retains lint/test/build checks. The source distribution
 also includes experiment scripts, protocols and recorded evidence.
 
-The Python 3.12 CI job also regenerates the recorded summaries and uploads the
+The Python 3.12 CI job also regenerates the recorded summaries with the explicit
+roundoff option and uploads the
 workspace ZIP, checksum and verification summaries as the
 `probe-fs-reproducibility` workflow artifact. Each matrix job explicitly selects
 its configured Python version.

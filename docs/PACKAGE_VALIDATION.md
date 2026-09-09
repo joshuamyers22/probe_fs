@@ -36,8 +36,19 @@ grids. Fresh fitting was restricted to the smoke test, which is explicitly
 excluded from scientific conclusions. Full-grid cross-platform numerical
 replication has not been established by these checks.
 
-CI is configured to verify evidence and run the smoke test on Python 3.12. These
-are local validation results; no hosted CI run or public release is claimed.
+The table above records the initial local package validation. During
+[PR #1](https://github.com/joshuamyers22/probe_fs/pull/1), Linux CI passed the test
+suite and fresh smoke but exposed three revised-study confidence-interval
+endpoints differing from macOS by roughly 3e-17. Exact comparison correctly
+rejected them. An explicit `--allow-roundoff` mode now logs each accepted finite
+float difference (rtol=1e-12, atol=1e-14); integer counts and structure remain
+exact. Thirteen added checks cover the observed difference and reject substantive
+or structural changes. The updated local suite passes **127 tests**.
+
+CI selects each Python matrix version explicitly, verifies evidence, and runs
+smoke and roundoff-aware reanalysis on Python 3.12. It uploads the package and
+verification reports. Consult the PR checks for hosted results for the latest
+commit; this document does not claim a public release or full-grid refitting.
 
 Use the [reproduction guide](../REPRODUCIBILITY.md) for commands and the
 [consolidated findings](BENCHMARK_RESULTS.md) for scientific interpretation.

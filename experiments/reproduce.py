@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import sys
@@ -38,9 +39,10 @@ def unpack(output):
             raise ValueError(f"Wrong checkpoint count: {study['id']}")
 
 
-def check_summary(actual, expected, label):
+def check_summary(actual, expected, label, allow_roundoff=False):
     """Identify differing leaves instead of hiding failures behind a study name."""
     differences = []
+    roundoff = []
 
     def compare(a, b, path):
         if type(a) is not type(b):
@@ -56,52 +58,67 @@ def check_summary(actual, expected, label):
             for i, (left, right) in enumerate(zip(a, b)):
                 compare(left, right, f"{path}[{i}]")
         elif a != b:
-            differences.append(f"{path}: actual={a!r}, recorded={b!r}")
+            if (allow_roundoff and isinstance(a, float) and math.isfinite(a) and math.isfinite(b)
+                    and math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-14)):
+                roundoff.append({"path": path, "actual": a, "recorded": b, "absolute_difference": abs(a-b)})
+            else:
+                differences.append(f"{path}: actual={a!r}, recorded={b!r}")
 
     compare(actual, expected, label)
     if differences:
         raise ValueError(f"Regenerated statistics differ ({len(differences)} leaves):\n" + "\n".join(differences[:12]))
+    return roundoff
 
 
-def reanalyze(output):
+def reanalyze(output, allow_roundoff=False):
     """Write only into a new evidence copy; never edit the original results."""
     if output.exists():
         raise ValueError("Use a new analysis output directory")
     unpack(output)
     summaries = {}
+    roundoff = []
+
+    def check(actual, expected, label):
+        roundoff.extend(check_summary(actual, expected, label, allow_roundoff))
+
     for study in catalog():
         directory = output / study["directory"]
         if study["kind"] == "paired":
             before = json.loads((directory / "paired-summary.json").read_text())
             execute(ROOT, "experiments/analyze_simulation_batch.py", "--output", str(directory))
-            check_summary(json.loads((directory / "paired-summary.json").read_text()), before, study['id'])
+            check(json.loads((directory / "paired-summary.json").read_text()), before, study['id'])
             summaries[study["id"]] = {"pairs": sum(r["seeds"] for r in before), "valid": sum(r["valid"] for r in before)}
         elif study["kind"] == "contexts":
             before = {name: json.loads((directory / name).read_text()) for name in
                       ("paired-summary.json", "method-summary.json", "summary.json")}
             execute(ROOT, "experiments/analyze_context_controls.py", "--output", str(directory))
             for name, expected in before.items():
-                check_summary(json.loads((directory / name).read_text()), expected, f"contexts/{name}")
+                check(json.loads((directory / name).read_text()), expected, f"contexts/{name}")
             summaries["contexts"] = before["summary.json"]
         elif study["kind"] == "pilot":
             from pgfs.study import summarize
             before = json.loads((directory / "aggregates.json").read_text())
             summarize(directory)
-            check_summary(json.loads((directory / "aggregates.json").read_text()), before, "pilot")
+            check(json.loads((directory / "aggregates.json").read_text()), before, "pilot")
             summaries["pilot"] = {"paired_cells": study["checkpoints"]}
         elif study["kind"] == "audit":
             from audit_endpoint import summarize
             before = json.loads((directory / "summary.json").read_text())
             config = json.loads((output / "results/expanded-simulation-v1/frozen-config.json").read_text())
             summarize(directory, config)
-            check_summary(json.loads((directory / "summary.json").read_text()), before, "audit")
+            check(json.loads((directory / "summary.json").read_text()), before, "audit")
             summaries["audit"] = {"cells": before["cells"]}
     policy = output / "results/selection-rule-v1"
     before = json.loads((policy / "policy-summary.json").read_text())
     execute(ROOT, "experiments/analyze_selection_rules.py", "--output", str(policy))
-    check_summary(json.loads((policy / "policy-summary.json").read_text()), before, "paired-policy")
+    check(json.loads((policy / "policy-summary.json").read_text()), before, "paired-policy")
+    summaries["comparison"] = {"mode": "allow-roundoff" if allow_roundoff else "exact",
+                               "relative_tolerance": 1e-12 if allow_roundoff else 0,
+                               "absolute_tolerance": 1e-14 if allow_roundoff else 0,
+                               "accepted_float_differences": roundoff}
     (output / "reanalysis-verification.json").write_text(json.dumps(summaries, indent=2, sort_keys=True)+"\n")
-    print("All seven recorded study summaries and paired-policy statistics reproduced exactly without refitting.")
+    precision = f"with {len(roundoff)} recorded roundoff differences" if roundoff else "exactly"
+    print(f"All seven recorded study summaries and paired-policy statistics reproduced {precision} without refitting.")
 
 
 def stage(study_id, destination):
@@ -175,6 +192,8 @@ def main():
     extract.add_argument("--output", type=Path, required=True)
     analyze = sub.add_parser("analyze")
     analyze.add_argument("--output", type=Path, required=True)
+    analyze.add_argument("--allow-roundoff", action="store_true",
+                         help="Allow and record finite float differences within rtol=1e-12, atol=1e-14; counts remain exact")
     smoke_parser = sub.add_parser("smoke")
     smoke_parser.add_argument("--output", type=Path, required=True)
     prepare = sub.add_parser("stage")
@@ -187,7 +206,7 @@ def main():
     elif args.command == "unpack":
         unpack(args.output.resolve())
     elif args.command == "analyze":
-        reanalyze(args.output.resolve())
+        reanalyze(args.output.resolve(), args.allow_roundoff)
     elif args.command == "stage":
         stage(args.study, args.output.resolve())
     else:

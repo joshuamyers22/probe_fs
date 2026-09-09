@@ -32,7 +32,7 @@ jobs:
         run: uv run python experiments/reproduce.py smoke --output artifacts/ci-smoke
       - run: uv build
       - if: matrix.python-version == '3.12'
-        run: uv run python experiments/reproduce.py analyze --output artifacts/ci-reanalysis
+        run: uv run python experiments/reproduce.py analyze --allow-roundoff --output artifacts/ci-reanalysis
       - if: matrix.python-version == '3.12'
         run: uv run python experiments/build_benchmark.py
       - if: matrix.python-version == '3.12'
