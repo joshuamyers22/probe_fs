@@ -1,0 +1,91 @@
+{
+  "budgets": [
+    1,
+    2
+  ],
+  "candidate_k": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "cost_preflight": "experiments/reports/public-cost-preflight-v2.json",
+  "datasets": [
+    "superconductivity",
+    "miniboone",
+    "yearpredictionmsd"
+  ],
+  "importance_splits": 1,
+  "include_all_features": true,
+  "inner_folds": 3,
+  "l1": {
+    "coefficient_tolerance": 1e-10,
+    "max_iter": 200000,
+    "penalties": [
+      10.0,
+      1.0,
+      0.1,
+      0.01,
+      0.001
+    ],
+    "tol": 0.0001
+  },
+  "memory_gib_cap": 8,
+  "name": "public-application-v1",
+  "one_se_rule": true,
+  "outer_folds": 3,
+  "protocol_artifact_sha256": {
+    "docs/PUBLIC_APPLICATION_PLAN.md": "c2d3af3fc8e62ab389465accef1e4ff3bf42599d7ec1b0182b194398e27c6e74",
+    "experiments/analyze_public_application.py": "af84a9c5b45b38d025703b3dea7c898f98b8c95405abf6f5ffe3193c13a03d4f",
+    "experiments/public_application_cost.py": "6d9d02f156439a437d2d832d726ea811e894e27f407aa52238e866263fa5ebfc",
+    "experiments/public_baseline.py": "856f3f28eadbb3e457ea5306f75be22bb616dfdcdbd3b088e9bac699386e2f7e",
+    "experiments/reports/public-cost-preflight-v2.json": "50c26cea4e08cc047b73ed77fdbb63a4998d60735ab762a4a7b82885698a8901",
+    "experiments/reproduce_public_calibration.py": "2759047d4a8def3596f16cadc4346cbe5ed3e81665ff7e3652b688e8b87a1496",
+    "experiments/run_public_application.py": "e2e59004cb6adbd692176a9f5e00052d48b5265518e573d4ca4beb759d237078",
+    "pyproject.toml": "71c9cc4965f6fb6ad4863977d36eda548b3b8d4d9807fd78143dc8d921bf9a0a",
+    "src/pgfs/__init__.py": "c89a85142561e4b655a44dd9f5fabda9f6fe5846977f040c8eb821ad5f87e401",
+    "src/pgfs/baseline_evaluation.py": "c6eb451aceddbf18b7f604adf7a96fda0c22cdf41e987440b14e42904ec2e740",
+    "src/pgfs/baselines.py": "55f214e0f710af46aea54e9e1629d99f8137520a0e3d49af1370c31c7401c296",
+    "src/pgfs/budget.py": "aa3fd70d15b4d387ac2b1382525284cf87a764c57063f75b15540cc7669a7102",
+    "src/pgfs/config.py": "2c220f53be66dd77320212580e3c6b047d98719af5afef9c4963130cfff49612",
+    "src/pgfs/contexts.py": "7a3bff48bd321c8d7ac7f94976321959aa7360b33522a2fe414f2d5b76ac4f8f",
+    "src/pgfs/datasets.py": "d09e69436532850eade61e89ec92399ccf07e392572d9649d655adb0cea16775",
+    "src/pgfs/estimation_data.py": "00ab99b36f1efbe1f104e00cf1b96c7045212c2cc49040d2712ecab01a4f0246",
+    "src/pgfs/experiment_decisions.py": "dce15520342672fd9e12dbfd1fe5fc3d14dadce33eb99ad6142a5931522dd615",
+    "src/pgfs/experiment_models.py": "2e68383c979f5845d5b867389f630018ad82dd626e062f91ed60d1ffa4952c49",
+    "src/pgfs/experiments.py": "700b2aae06829b4d55c30b8466c5eb512fcab42853fe1d7f2531cad37842d468",
+    "src/pgfs/importance.py": "3327b8b534a5eaa22cba4ddb4af89d7354bd664030e84d5f5b29b2ff8a03dbfc",
+    "src/pgfs/importance_policy.py": "6d4d04bd1621cb1edf989aaa90a8002d32b9bba307dd38ec3140d05d7f945cdc",
+    "src/pgfs/knockoffs.py": "002cbd2978809bc46098d36a1d81cd45428f1cd1b379dca9cfd1967e2cee7394",
+    "src/pgfs/learners.py": "3012e5d4acee2565671d66e8aa911639dd5f6a9f7185d98303d4fa26d0c12bff",
+    "src/pgfs/losses.py": "065e7cbaa1f8acca9a2a16ca6fea3ca94e543514c25d1a563457cbef84ab5f92",
+    "src/pgfs/metrics.py": "1269b28ecced0e840d36d66d786d64bea1ba8ccab6acfbf27537a0dad2b5f9a1",
+    "src/pgfs/nested.py": "e619d9639a44cd9f1ba8607d76ebb580cc79123ac156eb76d920d5976edbcb8f",
+    "src/pgfs/nested_models.py": "02b6dd1f17ecfe85743073e11d3db0c45e9d2850e703915e41c037e539136c6e",
+    "src/pgfs/players.py": "c3721a8bb5e57dffba38e01e076fff388af29d56654738ea9b497ee06d428751",
+    "src/pgfs/selection.py": "aab0ed3e5d411255532cbe709635056a909cdc6785e824f0f2b4a86e889f48d0",
+    "src/pgfs/shadows.py": "a6e8c688b2bd6e53470bccac5b9197d6b05a9d807c3dcfa13bb4e6d8e483541a",
+    "src/pgfs/simulate.py": "018bd73d88281e2199257949611cf0484eacbd350fc08c38656bbf904168a657",
+    "src/pgfs/study.py": "6ab146901117d8403b9359f99a201e5d945da50f908e98aca2a1d5b67ee5ded2",
+    "uv.lock": "5871e40fe636fbe32e0de7f4f0230166c96da1633f77c8b879d8b91708a087d7"
+  },
+  "quantile": 0.9,
+  "rows": [
+    3000,
+    5000
+  ],
+  "scientific_evidence": true,
+  "seeds": [
+    501,
+    502,
+    503,
+    504,
+    505
+  ],
+  "shadows": 3,
+  "status": "frozen",
+  "worker_hours_cap": 8,
+  "workers": 1
+}

@@ -1,0 +1,390 @@
+{
+  "assumptions": [
+    "Two times linear row scaling of first measured worker wall time, including loading/startup.",
+    "Memory: twice observed process peak plus ten dense full-size float64 arrays.",
+    "Heuristic estimates, not resource guarantees; convergence and conditioning can change with n.",
+    "One isolated worker; elapsed-time cap enforced by parent timeout; memory checked between methods.",
+    "No predictive losses or method rankings used in the cost gate."
+  ],
+  "calibration_config": {
+    "budgets": [
+      1,
+      2
+    ],
+    "candidate_k": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "datasets": [
+      "superconductivity",
+      "miniboone",
+      "yearpredictionmsd"
+    ],
+    "driver_sha256": {
+      "experiments/public_baseline.py": "856f3f28eadbb3e457ea5306f75be22bb616dfdcdbd3b088e9bac699386e2f7e",
+      "experiments/run_public_application.py": "e7d2389dfcf7d5cd9328e80123673ef9a0111a6b655a89e31a3c48fe94a5e6bc"
+    },
+    "importance_splits": 1,
+    "include_all_features": true,
+    "inner_folds": 3,
+    "l1": {
+      "coefficient_tolerance": 1e-10,
+      "max_iter": 20000,
+      "penalties": [
+        10.0,
+        1.0,
+        0.1,
+        0.01,
+        0.001
+      ],
+      "tol": 0.0001
+    },
+    "memory_gib_cap": 8,
+    "name": "public-cost-calibration-v1",
+    "one_se_rule": true,
+    "outer_folds": 3,
+    "protocol_artifact_sha256": {},
+    "quantile": 0.9,
+    "rows": [
+      600
+    ],
+    "scientific_evidence": false,
+    "seeds": [
+      599
+    ],
+    "shadows": 3,
+    "status": "calibration",
+    "worker_hours_cap": 8,
+    "workers": 1
+  },
+  "calibration_failures": 1,
+  "calibration_fingerprint": "6d1eecc9dc6e1d27f349c6be4f0c6bd0274495c87355a9eb365db02b870b0e67",
+  "calibration_methods": [
+    {
+      "dataset": "miniboone",
+      "error": null,
+      "error_type": null,
+      "method": "all",
+      "model_fits": 3,
+      "peak_memory_gib": 0.1830596923828125,
+      "seconds": 0.01960300002247095,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "miniboone",
+      "error": null,
+      "error_type": null,
+      "method": "gated-T1",
+      "model_fits": 2481,
+      "peak_memory_gib": 0.1830596923828125,
+      "seconds": 6.947781457565725,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "miniboone",
+      "error": null,
+      "error_type": null,
+      "method": "gated-T2",
+      "model_fits": 4868,
+      "peak_memory_gib": 0.1830596923828125,
+      "seconds": 13.567162457853556,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "miniboone",
+      "error": null,
+      "error_type": null,
+      "method": "l1",
+      "model_fits": 96,
+      "peak_memory_gib": 0.1830596923828125,
+      "seconds": 4.082330875098705,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "miniboone",
+      "error": null,
+      "error_type": null,
+      "method": "ungated-T1",
+      "model_fits": 2443,
+      "peak_memory_gib": 0.1830596923828125,
+      "seconds": 6.717126959003508,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "miniboone",
+      "error": null,
+      "error_type": null,
+      "method": "ungated-T2",
+      "model_fits": 4782,
+      "peak_memory_gib": 0.1830596923828125,
+      "seconds": 13.424723249860108,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "superconductivity",
+      "error": null,
+      "error_type": null,
+      "method": "all",
+      "model_fits": 3,
+      "peak_memory_gib": 0.214080810546875,
+      "seconds": 0.024048292078077793,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "superconductivity",
+      "error": null,
+      "error_type": null,
+      "method": "gated-T1",
+      "model_fits": 3969,
+      "peak_memory_gib": 0.214080810546875,
+      "seconds": 10.093864791095257,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "superconductivity",
+      "error": null,
+      "error_type": null,
+      "method": "gated-T2",
+      "model_fits": 7845,
+      "peak_memory_gib": 0.214080810546875,
+      "seconds": 18.992469125427306,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "superconductivity",
+      "error": "Objective did not converge. You might want to increase the number of iterations, check the scale of the features or consider increasing regularisation. Duality gap: 8.850217e+01, tolerance: 2.723e+01",
+      "error_type": "ConvergenceWarning",
+      "method": "l1",
+      "model_fits": null,
+      "peak_memory_gib": 0.214080810546875,
+      "seconds": 0.27940279245376587,
+      "status": "failed",
+      "warnings": {}
+    },
+    {
+      "dataset": "superconductivity",
+      "error": null,
+      "error_type": null,
+      "method": "ungated-T1",
+      "model_fits": 3932,
+      "peak_memory_gib": 0.214080810546875,
+      "seconds": 9.484003749676049,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "superconductivity",
+      "error": null,
+      "error_type": null,
+      "method": "ungated-T2",
+      "model_fits": 7767,
+      "peak_memory_gib": 0.214080810546875,
+      "seconds": 18.13195229228586,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "error": null,
+      "error_type": null,
+      "method": "all",
+      "model_fits": 3,
+      "peak_memory_gib": 0.1320953369140625,
+      "seconds": 0.020036333240568638,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "error": null,
+      "error_type": null,
+      "method": "gated-T1",
+      "model_fits": 4401,
+      "peak_memory_gib": 0.1326141357421875,
+      "seconds": 11.168457957915962,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "error": null,
+      "error_type": null,
+      "method": "gated-T2",
+      "model_fits": 8709,
+      "peak_memory_gib": 0.1326141357421875,
+      "seconds": 22.70676216762513,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "error": null,
+      "error_type": null,
+      "method": "l1",
+      "model_fits": 96,
+      "peak_memory_gib": 0.1326141357421875,
+      "seconds": 0.33285404182970524,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "error": null,
+      "error_type": null,
+      "method": "ungated-T1",
+      "model_fits": 4364,
+      "peak_memory_gib": 0.1326141357421875,
+      "seconds": 10.88701833318919,
+      "status": "complete",
+      "warnings": {}
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "error": null,
+      "error_type": null,
+      "method": "ungated-T2",
+      "model_fits": 8630,
+      "peak_memory_gib": 0.1326141357421875,
+      "seconds": 21.54954733327031,
+      "status": "complete",
+      "warnings": {}
+    }
+  ],
+  "checkpoint_sha256": {
+    "miniboone-n600-seed599/cell-all.json": "763579b7b6bd754514a245eb64d672599c3d7118f6e947a5c0256eec1fd16968",
+    "miniboone-n600-seed599/cell-gated-T1.json": "35b5b4b60b926fe627e33453516015cb2c55c043f6309db438b985000f2d1989",
+    "miniboone-n600-seed599/cell-gated-T2.json": "8bd6315de775f04c35897f99df7601b5b6cc968333e4fe6d4158f82ad648ed60",
+    "miniboone-n600-seed599/cell-l1.json": "a26e4ee63f876f9a25321dcddde03cf581d8a5a520201e4d56911602c47621d7",
+    "miniboone-n600-seed599/cell-ungated-T1.json": "862bccaeb1d72d77f55fe598ecd6ceed5fc2a18ab946a84414c3802bb8295cbe",
+    "miniboone-n600-seed599/cell-ungated-T2.json": "15516340650edc150d58ca9d60c5853454783745cbaaaaed2d04f29d8811ba87",
+    "superconductivity-n600-seed599/cell-all.json": "541d56e6ef35504f7feacc00a12c5f4726ca914fef208ae7593033b14332c185",
+    "superconductivity-n600-seed599/cell-gated-T1.json": "fbad60f860c704bb82779c9ad68150ae049733e8889f2bffb8e17c99436a4022",
+    "superconductivity-n600-seed599/cell-gated-T2.json": "0b23db60cdb77c8cdfd8f43879d5c0c117c289cb4197d31976b1f09263531b6d",
+    "superconductivity-n600-seed599/cell-l1.json": "e1c2b90ed7684826659f33ebf846678a2495a96899d60f5f234951949c0d8275",
+    "superconductivity-n600-seed599/cell-ungated-T1.json": "49904636dec5274231fbe88029d6d89500d8529594ebfd5448ab53e3c286d7dd",
+    "superconductivity-n600-seed599/cell-ungated-T2.json": "3bdf067aedcd23c70246b4f49e648c0daadf6938102af99a8b92c2c6344d4085",
+    "yearpredictionmsd-n600-seed599/cell-all.json": "8fcdf699d38019a95da9d3067785c43dda89d51817552aab77d070d88163dae6",
+    "yearpredictionmsd-n600-seed599/cell-gated-T1.json": "7b6c3b4236742e0b989c27ab349d2ec4f4856c8d70cee42715ee07798880e385",
+    "yearpredictionmsd-n600-seed599/cell-gated-T2.json": "b495c14cbd32d88c6bbc836befc578dcd08fec75f0f0a40babd52afd10725a03",
+    "yearpredictionmsd-n600-seed599/cell-l1.json": "baeccd9ea752de40b2bb4e593170441ce7dd23ac9c3f955c13d05ba35820f94e",
+    "yearpredictionmsd-n600-seed599/cell-ungated-T1.json": "e9769c5ea3ea521b20d87e1575a1bb9b6ce2044c142efd821320b328540c609a",
+    "yearpredictionmsd-n600-seed599/cell-ungated-T2.json": "c0739617be79c75f2d87ae945ee1cab989ff60e60400ea2025bc58d1e0416f4a"
+  },
+  "estimated_peak_memory_gib": 0.488511323928833,
+  "estimated_worker_hours": 10.52190203565449,
+  "planned_config": {
+    "budgets": [
+      1,
+      2
+    ],
+    "candidate_k": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "datasets": [
+      "superconductivity",
+      "miniboone",
+      "yearpredictionmsd"
+    ],
+    "importance_splits": 1,
+    "include_all_features": true,
+    "inner_folds": 3,
+    "l1": {
+      "coefficient_tolerance": 1e-10,
+      "max_iter": 20000,
+      "penalties": [
+        10.0,
+        1.0,
+        0.1,
+        0.01,
+        0.001
+      ],
+      "tol": 0.0001
+    },
+    "memory_gib_cap": 8,
+    "name": "public-application-v1",
+    "one_se_rule": true,
+    "outer_folds": 3,
+    "protocol_artifact_sha256": {},
+    "quantile": 0.9,
+    "rows": [
+      3000,
+      10000
+    ],
+    "scientific_evidence": true,
+    "seeds": [
+      501,
+      502,
+      503,
+      504,
+      505
+    ],
+    "shadows": 3,
+    "status": "draft",
+    "worker_hours_cap": 8,
+    "workers": 1
+  },
+  "projections": [
+    {
+      "dataset": "superconductivity",
+      "estimated_peak_memory_gib": 0.4462665319442749,
+      "rows": 3000,
+      "seeds": 5,
+      "worker_seconds": 2907.852602098137
+    },
+    {
+      "dataset": "superconductivity",
+      "estimated_peak_memory_gib": 0.488511323928833,
+      "rows": 10000,
+      "seeds": 5,
+      "worker_seconds": 9692.842006993791
+    },
+    {
+      "dataset": "miniboone",
+      "estimated_peak_memory_gib": 0.37729525566101074,
+      "rows": 3000,
+      "seeds": 5,
+      "worker_seconds": 2330.173106258735
+    },
+    {
+      "dataset": "miniboone",
+      "estimated_peak_memory_gib": 0.40337228775024414,
+      "rows": 10000,
+      "seeds": 5,
+      "worker_seconds": 7767.243687529117
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "estimated_peak_memory_gib": 0.28534483909606934,
+      "rows": 3000,
+      "seeds": 5,
+      "worker_seconds": 3503.24675203301
+    },
+    {
+      "dataset": "yearpredictionmsd",
+      "estimated_peak_memory_gib": 0.33228349685668945,
+      "rows": 10000,
+      "seeds": 5,
+      "worker_seconds": 11677.48917344337
+    }
+  ],
+  "scientific_evidence": false,
+  "within_compute_gate": false
+}

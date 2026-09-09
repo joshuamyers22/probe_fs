@@ -1,9 +1,11 @@
 # Larger public-data application study
 
-Status: proposed design for review, 2026-09-09. No new application fits have run.
-Freeze the executable configuration, this protocol, source snapshot and compute
-preflight together after the implementation prerequisites below pass. Record any
-changes before fitting; do not adjust the design after inspecting outcomes.
+Status: development design frozen on 2026-09-09 after baseline validation and
+cost calibration. No scientific application grid has run. The
+[executable configuration](../experiments/public-application.json) pins this
+protocol, the passing preflight and the implementation by SHA-256. Calibration
+outcomes are excluded from scientific comparisons. Changes require a separately
+documented protocol/configuration before fitting.
 
 ## Question and scope
 
@@ -18,12 +20,12 @@ Use the three existing archives and checksums in
 account or API key. Preserve the dataset attribution and preprocessing boundaries
 documented in the [pilot protocol](EXPERIMENT_PLAN.md).
 
-## Proposed development design
+## Frozen development design
 
 | Item | Specification |
 | --- | --- |
 | Datasets | Superconductivity, MiniBooNE, Year Prediction MSD |
-| Subset sizes | 3,000 and 10,000 development rows per dataset |
+| Subset sizes | 3,000 and 5,000 development rows per dataset |
 | Replication seeds | 501, 502, 503, 504, 505 |
 | Outer / inner folds | Three / three; identical outer folds across methods |
 | Primary gated budgets | One and two partial contexts; three shadows, quantile 0.9, one importance split |
@@ -32,7 +34,7 @@ documented in the [pilot protocol](EXPERIMENT_PLAN.md).
 | Size choice | One-SE rule using inner-fold losses only |
 | Prediction learners | Ridge(alpha=1) for regression; logistic regression(C=1, liblinear, max_iter=1000) for classification |
 | Preprocessing | Median imputation and standard scaling fitted within every training partition |
-| Runtime controls | One BLAS thread per worker; two concurrent workers maximum |
+| Runtime controls | One BLAS thread; one isolated worker at a time |
 
 This gives 30 dataset/subset/seed designs and 60 primary gated/ungated contrasts.
 Within each design, every method receives identical original row IDs and folds.
@@ -50,11 +52,16 @@ feature selection, preprocessing and cost calibration.
 ## External references
 
 Evaluate the all-feature learner and an L1 selector on each of the 30 designs.
-The L1 selector uses inner-CV prediction loss to choose its regularization and
-refits on each outer training set; selected columns feed the same final learner
-as the primary methods. Freeze the exact penalty grid and tie/empty-set policy
-in the executable configuration after the adapter is validated. This is a minimum
-application comparison, not the full Section 12 baseline suite.
+The L1 selector uses inner-CV loss of the final prediction learner to choose its
+regularization, then refits on each outer training set. Every inner-training fold
+gets fresh imputation, scaling, L1 selection and prediction fitting. Regression
+uses Lasso alpha; classification uses L1 logistic regression with C=1/penalty.
+The decreasing penalty grid is [10, 1, 0.1, 0.01, 0.001]. Exact mean-loss ties
+choose the strongest penalty. Coefficients with absolute magnitude above 1e-10
+select a feature; an empty set uses an intercept-only prediction model. Maximum
+iterations are 200,000 and solver tolerance is 1e-4. Convergence warnings fail the
+method and are retained in its checkpoint. This is a minimum application
+comparison, not the full Section 12 baseline suite.
 
 Report these references at their actual cost. Count selector fitting and tuning
 as well as final prediction fits; do not pad cheap methods to match PGFS. Keep the
@@ -81,7 +88,7 @@ list, tuning rules, seeds, metrics, and a single evaluation command. All reporte
 test outcomes must then be retained; do not choose a method or revise settings
 from that test. The development phase alone is not a final official-split result.
 
-## Implementation prerequisites and compute gate
+## Implementation and compute gate
 
 1. Add an application runner that checkpoints each method and records original
    row IDs, folds, rankings, selected sets, source/driver hashes, versions and full
@@ -106,6 +113,43 @@ from that test. The development phase alone is not a final official-split result
    Reanalyze from checkpoints in a clean workspace and add the complete results
    to a new version of the reproducibility package.
 
-The immediate deliverable is the benchmark review PR and hosted validation.
-The next implementation milestone is the application runner and counted,
-fold-local baseline adapter; this draft is not yet an executable frozen study.
+These prerequisites are implemented and the second calibration passes. The
+initial 600-row calibration recorded one L1 convergence failure at 20,000
+iterations and projected 10.52 worker-hours for the proposed 3,000/10,000-row
+grid, exceeding the eight-hour cap. Before scientific fitting, the larger subset
+was reduced to 5,000 rows and the solver allowance increased to 200,000 iterations.
+All five replication seeds, penalties and outcome rules were retained. The
+second calibration completed all 18 methods without warnings or failures and
+projects 6.83 worker-hours for the revised grid. These choices used cost and
+convergence diagnostics, not comparative predictive performance.
+
+The parent enforces the remaining worker-time cap with a subprocess timeout.
+Process peak memory is recorded and checked between methods; the 8 GiB threshold
+is not a hard operating-system memory limit within an individual fit. Projections
+use twice linear row scaling of observed worker time and are estimates, not
+guarantees. See [calibration results](PUBLIC_CALIBRATION_RESULTS.md).
+
+## Commands
+
+Use the locked environment on Linux or macOS (or Linux under WSL), then download
+the pinned archives if needed:
+
+```sh
+uv sync --locked --all-extras
+uv run python -m pgfs.datasets
+uv run python experiments/run_public_application.py --output results/public-application-v1
+uv run python experiments/analyze_public_application.py --output results/public-application-v1 --report artifacts/public-application-v1
+```
+
+Repeat the run command to resume unchanged checkpoints. Failed methods remain
+recorded; correcting their settings requires a new version and output directory.
+The analyzer checks completeness, source/row/fold identities and method records,
+and retains failures in tables and denominators. Plots show individual seeds and
+means, with actual completed/planned counts. The final grid is 180 method records:
+30 designs times four primary arms plus two external references.
+
+To reproduce only the cost evidence without fitting or data downloads:
+
+```sh
+uv run python experiments/reproduce_public_calibration.py --output artifacts/public-cost-review
+```
