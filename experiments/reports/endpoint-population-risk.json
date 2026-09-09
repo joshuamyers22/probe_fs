@@ -1,0 +1,146 @@
+[
+  {
+    "class_counts": [
+      1,
+      0,
+      0
+    ],
+    "in_original_path": true,
+    "k": 1,
+    "oracle_excess_mse": 0.975,
+    "rho": 0.5,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      1,
+      1,
+      0
+    ],
+    "in_original_path": true,
+    "k": 2,
+    "oracle_excess_mse": 0.6137499999999999,
+    "rho": 0.5,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      1,
+      1,
+      1
+    ],
+    "in_original_path": true,
+    "k": 3,
+    "oracle_excess_mse": 0.36875,
+    "rho": 0.5,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      2,
+      1,
+      1
+    ],
+    "in_original_path": true,
+    "k": 4,
+    "oracle_excess_mse": 0.20208333333333328,
+    "rho": 0.5,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      2,
+      2,
+      1
+    ],
+    "in_original_path": false,
+    "k": 5,
+    "oracle_excess_mse": 0.08166666666666667,
+    "rho": 0.5,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      2,
+      2,
+      2
+    ],
+    "in_original_path": true,
+    "k": 6,
+    "oracle_excess_mse": 0.0,
+    "rho": 0.5,
+    "within_margin": true
+  },
+  {
+    "class_counts": [
+      1,
+      0,
+      0
+    ],
+    "in_original_path": true,
+    "k": 1,
+    "oracle_excess_mse": 1.1960526315789473,
+    "rho": 0.9,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      1,
+      1,
+      0
+    ],
+    "in_original_path": true,
+    "k": 2,
+    "oracle_excess_mse": 0.5458026315789473,
+    "rho": 0.9,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      1,
+      1,
+      1
+    ],
+    "in_original_path": true,
+    "k": 3,
+    "oracle_excess_mse": 0.10480263157894734,
+    "rho": 0.9,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      2,
+      1,
+      1
+    ],
+    "in_original_path": true,
+    "k": 4,
+    "oracle_excess_mse": 0.05743421052631578,
+    "rho": 0.9,
+    "within_margin": false
+  },
+  {
+    "class_counts": [
+      2,
+      2,
+      1
+    ],
+    "in_original_path": false,
+    "k": 5,
+    "oracle_excess_mse": 0.02321052631578946,
+    "rho": 0.9,
+    "within_margin": true
+  },
+  {
+    "class_counts": [
+      2,
+      2,
+      2
+    ],
+    "in_original_path": true,
+    "k": 6,
+    "oracle_excess_mse": 0.0,
+    "rho": 0.9,
+    "within_margin": true
+  }
+]

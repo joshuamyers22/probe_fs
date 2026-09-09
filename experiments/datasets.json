@@ -1,0 +1,33 @@
+{
+  "superconductivity": {
+    "uci_id": 464,
+    "doi": "10.24432/C53P47",
+    "license": "CC BY 4.0 (UCI catalog)",
+    "url": "https://archive.ics.uci.edu/static/public/464/superconductivty+data.zip",
+    "filename": "superconductivity.zip",
+    "sha256": "87f4490d73390ff94ee01dbf0d7d32abc80b22f2c803d471765cfc46a9f6371e",
+    "rows": 21263, "features": 81, "task": "regression",
+    "selection_policy": "Keep first original row per exact material formula, then seeded sample; target critical_temp."
+  },
+  "miniboone": {
+    "uci_id": 199,
+    "doi": "10.24432/C5QC87",
+    "license": "CC BY 4.0 (UCI catalog)",
+    "url": "https://archive.ics.uci.edu/static/public/199/miniboone+particle+identification.zip",
+    "filename": "miniboone.zip",
+    "sha256": "af4573ca81797ca1c5bfc623f0fdf26ed07e626e2717c322224f96e8795f8752",
+    "rows": 130064, "features": 50, "task": "binary",
+    "selection_policy": "Header counts define signal=1 then background=0; seeded stratified sample; -999 becomes missing and is imputed within each fitted model."
+  },
+  "yearpredictionmsd": {
+    "uci_id": 203,
+    "doi": "10.24432/C50K61",
+    "license": "CC BY 4.0 (UCI catalog)",
+    "url": "https://archive.ics.uci.edu/static/public/203/yearpredictionmsd.zip",
+    "filename": "yearpredictionmsd.zip",
+    "sha256": "06f801af323bb7798e800583acce4ea1ed2697ac12c23f4424aea0a7a3d09e11",
+    "rows": 515345, "features": 90, "task": "regression",
+    "development_rows": 463715,
+    "selection_policy": "Seeded sample from first 463715 rows only; last 51630 rows remain reserved official test data; first column is year."
+  }
+}

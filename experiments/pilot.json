@@ -1,0 +1,23 @@
+{
+  "name": "pilot-v1",
+  "purpose": "Exploratory feasibility pilot; not confirmatory evidence or a study stopping decision.",
+  "seeds": [11, 29],
+  "budgets": [2, 4],
+  "outer_folds": 3,
+  "inner_folds": 2,
+  "importance_splits": 1,
+  "shadows": 3,
+  "quantile": 0.9,
+  "simulation": {
+    "n": [300], "rho": [0.5, 0.9], "snr": [0.25, 2.0],
+    "n_classes": 3, "class_size": 2,
+    "n_null_blocks": 1, "null_block_size": 3, "n_independent_nulls": 6,
+    "candidate_k": [1, 2, 3, 4, 6],
+    "noninferiority_margin": 0.05, "k_max": 6, "min_effect": 0.05
+  },
+  "public": {
+    "datasets": ["superconductivity", "miniboone", "yearpredictionmsd"],
+    "seeds": [11], "rows": 600, "budgets": [1, 2],
+    "candidate_k": [1, 2, 4, 8, 16, 32]
+  }
+}

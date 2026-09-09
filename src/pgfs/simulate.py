@@ -8,9 +8,9 @@ primary DGP therefore returns its classes as data, not as an afterthought:
     y = sum_h beta_h * U_h + noise
 
 where ``U_h`` is a latent driver for class ``h`` and every observed member of that
-class is a noisy view of ``U_h``. Any single member supplies the class's predictive
-information, which is exactly the redundancy that makes exact-support recovery
-the wrong target (Section 15) and class recall the right one.
+class is a noisy view of ``U_h``. A single member identifies class coverage, but
+additional members improve estimation of the latent driver. Class recall measures
+coverage of noisy-proxy groups, not recovery of fully interchangeable variables.
 
 Null predictors are generated in correlated blocks as well as independently. Nulls
 that are correlated with each other - but with nothing in ``y`` - are the ones that

@@ -1,0 +1,2 @@
+# Preserve generated CSV bytes and recognize their standard CRLF line endings.
+experiments/reports/*.csv -text whitespace=cr-at-eol

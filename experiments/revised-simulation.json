@@ -1,0 +1,86 @@
+{
+  "name": "revised-simulation-v1",
+  "purpose": "Fresh-seed exploratory noisy-proxy benchmark with analytically feasible partial and full class coverage; not a confirmatory verdict.",
+  "seeds": [
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210
+  ],
+  "budgets": [
+    2,
+    4
+  ],
+  "outer_folds": 3,
+  "inner_folds": 2,
+  "importance_splits": 1,
+  "shadows": 3,
+  "quantile": 0.9,
+  "simulation": {
+    "n": [
+      300,
+      1000,
+      3000
+    ],
+    "rho": [
+      0.5,
+      0.9
+    ],
+    "snr": [
+      0.25,
+      2.0
+    ],
+    "n_classes": 3,
+    "class_size": 2,
+    "n_null_blocks": 1,
+    "null_block_size": 3,
+    "n_independent_nulls": 6,
+    "candidate_k": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "noninferiority_margin": 0.05,
+    "k_max": 6,
+    "min_effect": 0.05,
+    "betas": [
+      1.0,
+      0.3,
+      0.15
+    ]
+  },
+  "public": {
+    "datasets": [],
+    "seeds": [
+      11
+    ],
+    "rows": 600,
+    "budgets": [
+      1,
+      2
+    ],
+    "candidate_k": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ]
+  },
+  "workers": 4,
+  "protocol_artifact_sha256": {
+    "docs/REVISED_SIMULATION_PLAN.md": "c537e3b1da2e948ea1d148bb5d6b08c6348b578390599cad428fc8c0d083d902",
+    "experiments/check_simulation_feasibility.py": "7de4e14be6a2e529673db66d53af524b7ca19f574fc3af5b1bbcc246e3d83f6e",
+    "experiments/reports/revised-feasibility.json": "230372437294b9d0fe020dad87d7b3ab19e30ef6e3709a307b6345ba6cc4d04d"
+  }
+}

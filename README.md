@@ -108,6 +108,46 @@ in ways the method does not model. The knockoff baseline *does* control FDR unde
 its Gaussian model-X assumptions; that guarantee belongs to the baseline and does
 not transfer.
 
+## Reproducible experiment pilot
+
+The [reproducibility package](REPRODUCIBILITY.md) includes frozen protocols,
+checksummed evidence, historical source snapshots, and commands to regenerate
+summaries or run a small fitting-and-resume test. Start with the
+[consolidated findings](docs/BENCHMARK_RESULTS.md): the completed studies do not
+establish a persistent matched-compute class-recall advantage for probe gating.
+
+The next milestone is the [larger public-data application study](docs/PUBLIC_APPLICATION_PLAN.md).
+Its protocol is a draft pending baseline validation and compute preflight; no new
+application outcomes have been collected.
+
+```sh
+uv sync --locked --all-extras
+uv run python experiments/reproduce.py verify
+uv run python experiments/reproduce.py analyze --output artifacts/reanalysis-v1
+```
+
+The reproducible simulation/public-data pilot is described in
+[the experiment plan](docs/EXPERIMENT_PLAN.md). Run it with
+`uv run python -m pgfs.study` after `uv run python -m pgfs.datasets` and installing
+all extras. It produces checkpointed results, CSV tables and compute curves.
+The [initial pilot results](docs/PILOT_RESULTS.md) include the measured costs and
+endpoint-validity findings.
+The [expanded simulation results](docs/EXPANDED_SIMULATION_RESULTS.md) cover
+240 paired comparisons at three sample sizes with ten new seeds.
+The [endpoint audit](docs/ENDPOINT_AUDIT_RESULTS.md) explains the constraint
+failures and recall ceiling using population-risk calculations and diagnostic
+rescores of saved rankings.
+The [revised simulation protocol](docs/REVISED_SIMULATION_PLAN.md) tests weaker
+signal classes on fresh seeds with a complete size path and population-verified
+endpoint headroom; see the [results](docs/REVISED_SIMULATION_RESULTS.md).
+The [selection-rule sensitivity](docs/SELECTION_RULE_PLAN.md) compares one-SE
+with inner-CV argmin on the same fresh seeds and shuffled feature order; its
+[results](docs/SELECTION_RULE_RESULTS.md) separate validity changes from recall
+effects on common valid seeds.
+The [context-control protocol](docs/CONTEXT_CONTROLS_PLAN.md) compares local and
+global shadows with full-conditioning LOCO at matched and natural costs; see the
+[results](docs/CONTEXT_CONTROLS_RESULTS.md).
+
 ## Not yet implemented
 
 - **Conditional probes** (Section 13 sensitivity): needs a model for `P(X_j | X_S)`.
@@ -120,8 +160,8 @@ not transfer.
   hot spot and parallelizes cleanly over `(b, t)`, but the base-loss cache is
   per-split, so a parallel version should shard by split to keep the cache and the
   fit accounting coherent.
-- **Plotting.** `ComparisonTable.rows` is shaped for the Section 10
-  performance-versus-compute curves; drawing them is left to the caller.
+- **Full study execution.** The pilot runner draws performance-versus-compute
+  curves; the larger confirmatory grid and remaining ablations are still pending.
 
 ## Cost
 
