@@ -117,8 +117,9 @@ summaries or run a small fitting-and-resume test. Start with the
 establish a persistent matched-compute class-recall advantage for probe gating.
 
 The next milestone is the [larger public-data application study](docs/PUBLIC_APPLICATION_PLAN.md).
-Its protocol is a draft pending baseline validation and compute preflight; no new
-application outcomes have been collected.
+Its runner and counted L1 baseline are validated, and its 3,000/5,000-row protocol
+is frozen after [cost calibration](docs/PUBLIC_CALIBRATION_RESULTS.md). The full
+application grid has not run.
 
 ```sh
 uv sync --locked --all-extras
