@@ -10,7 +10,7 @@ import zipfile
 from pathlib import PurePosixPath
 
 ROOT_FILES = ("README.md", "REPRODUCIBILITY.md", "Makefile", "MANIFEST.in", "pyproject.toml",
-              "uv.lock", ".python-version", ".gitignore", "probe-gated-feature-selection-clean.md")
+              "uv.lock", ".python-version", ".gitignore", ".gitattributes", "probe-gated-feature-selection-clean.md")
 SOURCE_DIRS = ("src", "tests", "examples", "experiments", "docs", ".github", "benchmarks")
 
 

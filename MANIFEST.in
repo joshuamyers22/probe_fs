@@ -1,4 +1,4 @@
-include .python-version uv.lock REPRODUCIBILITY.md Makefile
+include .python-version .gitattributes uv.lock REPRODUCIBILITY.md Makefile
 include probe-gated-feature-selection-clean.md
 recursive-include experiments *.py *.json *.csv
 recursive-include docs *.md *.png
