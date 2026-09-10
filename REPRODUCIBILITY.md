@@ -136,3 +136,20 @@ its configured Python version.
 See [consolidated findings](docs/BENCHMARK_RESULTS.md) and
 [package validation](docs/PACKAGE_VALIDATION.md). Negative and inconclusive results
 remain included; these studies do not establish broad superiority for gating.
+
+## Completed public-data application study
+
+The separate `benchmarks/public-application-results-v1.zip` archive contains the
+180 completed application method checkpoints, 30 shared data/fold records,
+historical source/configuration, runtime ledger and recorded analysis. Its
+results are additional to the seven methodology components described above.
+
+```sh
+uv run python experiments/reproduce_public_results.py --output artifacts/public-results-review
+```
+
+This verifies and reanalyzes the recorded application results without fitting or
+downloading data. It regenerates tables and plots, keeps counts and structure
+exact, and records any finite float roundoff under the same declared tolerances.
+See [application results](docs/PUBLIC_APPLICATION_RESULTS.md). The reserved Year
+Prediction test partition remains unevaluated.

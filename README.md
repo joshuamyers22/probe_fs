@@ -116,10 +116,11 @@ summaries or run a small fitting-and-resume test. Start with the
 [consolidated findings](docs/BENCHMARK_RESULTS.md): the completed studies do not
 establish a persistent matched-compute class-recall advantage for probe gating.
 
-The next milestone is the [larger public-data application study](docs/PUBLIC_APPLICATION_PLAN.md).
-Its runner and counted L1 baseline are validated, and its 3,000/5,000-row protocol
-is frozen after [cost calibration](docs/PUBLIC_CALIBRATION_RESULTS.md). The full
-application grid has not run.
+The [public-data application study](docs/PUBLIC_APPLICATION_RESULTS.md) completed
+all 180 method evaluations under its frozen 3,000/5,000-row protocol. It found
+no consistent predictive advantage for gating; a localized Year Prediction gain
+against ungated selection came with a larger selected set. The all-feature or
+L1 reference had the lowest mean loss in each dataset/sample-size setting.
 
 ```sh
 uv sync --locked --all-extras
