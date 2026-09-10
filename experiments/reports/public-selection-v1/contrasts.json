@@ -1,0 +1,602 @@
+[
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 3000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "superconductivity",
+    "gating_effect_change": 0.0,
+    "one_se_gated_minus_ungated": 0.0,
+    "rows": 5000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": -0.007730927889734673,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.01941327931409212,
+    "one_se_gated_minus_ungated": 0.011682351424357446,
+    "rows": 3000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": -0.0015850895341882332,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.004597030580914041,
+    "one_se_gated_minus_ungated": 0.003011941046725808,
+    "rows": 3000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0006690017778085977,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.003925890876777194,
+    "one_se_gated_minus_ungated": 0.0045948926545857915,
+    "rows": 3000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": -0.0010726902064256416,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.00927204605998827,
+    "one_se_gated_minus_ungated": 0.008199355853562629,
+    "rows": 3000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0026911797975541496,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.0034745423825528476,
+    "one_se_gated_minus_ungated": 0.006165722180106997,
+    "rows": 3000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.001266073406619106,
+    "one_se_gated_minus_ungated": 0.001266073406619106,
+    "rows": 3000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": -0.0009192543068066716,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.0026621401354477714,
+    "one_se_gated_minus_ungated": -0.003581394442254443,
+    "rows": 3000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0002521800861064738,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.0059265104201433605,
+    "one_se_gated_minus_ungated": 0.006178690506249834,
+    "rows": 3000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": -0.0006245075441293491,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.0027220778838796256,
+    "one_se_gated_minus_ungated": -0.0033465854280089746,
+    "rows": 3000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 0.00512182293214436,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.005667581575441283,
+    "one_se_gated_minus_ungated": -0.000545758643296923,
+    "rows": 3000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.0018256701660774866,
+    "one_se_gated_minus_ungated": -0.0018256701660774866,
+    "rows": 5000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.00142736781549746,
+    "one_se_gated_minus_ungated": -0.00142736781549746,
+    "rows": 5000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.005106563806899195,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.008257982036477346,
+    "one_se_gated_minus_ungated": -0.003151418229578151,
+    "rows": 5000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": -0.006197965087371443,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.007483016863051556,
+    "one_se_gated_minus_ungated": 0.0012850517756801128,
+    "rows": 5000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.0015239966018522066,
+    "one_se_gated_minus_ungated": 0.0015239966018522066,
+    "rows": 5000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.0026732197097457666,
+    "one_se_gated_minus_ungated": -0.0026732197097457666,
+    "rows": 5000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.003446068531938018,
+    "one_se_gated_minus_ungated": 0.003446068531938018,
+    "rows": 5000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": -0.0005522828371625488,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.002549697746341145,
+    "one_se_gated_minus_ungated": 0.0019974149091785964,
+    "rows": 5000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0007024090809086003,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "miniboone",
+    "gating_effect_change": 0.010892126630458715,
+    "one_se_gated_minus_ungated": -0.010189717549550115,
+    "rows": 5000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "miniboone",
+    "gating_effect_change": -0.0006858787862195903,
+    "one_se_gated_minus_ungated": 0.0006858787862195903,
+    "rows": 5000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 2.9025992828709946,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -0.46522767430789713,
+    "one_se_gated_minus_ungated": 3.3678269571788917,
+    "rows": 3000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 1.527020759571542,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -2.644139196350764,
+    "one_se_gated_minus_ungated": 4.171159955922306,
+    "rows": 3000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.5702831950633112,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 1.002202925104129,
+    "one_se_gated_minus_ungated": -0.43191973004081774,
+    "rows": 3000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.6189603812680247,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 0.564090796990314,
+    "one_se_gated_minus_ungated": 0.054869584277710715,
+    "rows": 3000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 1.6422618612665048,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -2.374415954779465,
+    "one_se_gated_minus_ungated": 4.01667781604597,
+    "rows": 3000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.13391586913412823,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 0.7025857342103592,
+    "one_se_gated_minus_ungated": -0.568669865076231,
+    "rows": 3000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": -0.1441776307259488,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 0.5679865700578404,
+    "one_se_gated_minus_ungated": -0.7121642007837892,
+    "rows": 3000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.29852685577924376,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 0.4673900514037399,
+    "one_se_gated_minus_ungated": -0.16886319562449614,
+    "rows": 3000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 2.308134400045404,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -1.1048704760854235,
+    "one_se_gated_minus_ungated": 3.4130048761308274,
+    "rows": 3000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 2.5829804492480832,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 0.1718075016559908,
+    "one_se_gated_minus_ungated": 2.4111729475920924,
+    "rows": 3000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 3.167860476588203,
+    "one_se_gated_minus_ungated": -3.167860476588203,
+    "rows": 5000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -1.1707396351270347,
+    "one_se_gated_minus_ungated": 1.1707396351270347,
+    "rows": 5000,
+    "seed": 501
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 1.0608950384520313,
+    "one_se_gated_minus_ungated": -1.0608950384520313,
+    "rows": 5000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -2.942695263440072,
+    "one_se_gated_minus_ungated": 2.942695263440072,
+    "rows": 5000,
+    "seed": 502
+  },
+  {
+    "argmin_gated_minus_ungated": -0.8185573864279263,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -0.762834171502135,
+    "one_se_gated_minus_ungated": -0.05572321492579135,
+    "rows": 5000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": -0.6718322590758703,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": -1.2797672007103955,
+    "one_se_gated_minus_ungated": 0.6079349416345252,
+    "rows": 5000,
+    "seed": 503
+  },
+  {
+    "argmin_gated_minus_ungated": 0.0,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 0.8533394099200251,
+    "one_se_gated_minus_ungated": -0.8533394099200251,
+    "rows": 5000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": -0.14807874160597123,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 0.04470200873443275,
+    "one_se_gated_minus_ungated": -0.19278075034040398,
+    "rows": 5000,
+    "seed": 504
+  },
+  {
+    "argmin_gated_minus_ungated": 0.16711962451854845,
+    "complete": true,
+    "contexts": 1,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 1.5104475086213398,
+    "one_se_gated_minus_ungated": -1.3433278841027914,
+    "rows": 5000,
+    "seed": 505
+  },
+  {
+    "argmin_gated_minus_ungated": 1.2584642614881432,
+    "complete": true,
+    "contexts": 2,
+    "dataset": "yearpredictionmsd",
+    "gating_effect_change": 2.4375495314528735,
+    "one_se_gated_minus_ungated": -1.1790852699647303,
+    "rows": 5000,
+    "seed": 505
+  }
+]
