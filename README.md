@@ -122,6 +122,12 @@ no consistent predictive advantage for gating; a localized Year Prediction gain
 against ungated selection came with a larger selected set. The all-feature or
 L1 reference had the lowest mean loss in each dataset/sample-size setting.
 
+The subsequent [public selection-rule sensitivity](docs/PUBLIC_SELECTION_RESULTS.md)
+reduced predictive loss in 79/80 MiniBooNE and Year Prediction comparisons by
+choosing the minimum inner-validation loss, with larger feature sets. All 40
+Superconductivity comparisons were unchanged. This identifies excessive pruning
+as an improvable weakness, while leaving a consistent gating advantage unestablished.
+
 ```sh
 uv sync --locked --all-extras
 uv run python experiments/reproduce.py verify

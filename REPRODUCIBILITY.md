@@ -153,3 +153,26 @@ downloading data. It regenerates tables and plots, keeps counts and structure
 exact, and records any finite float roundoff under the same declared tolerances.
 See [application results](docs/PUBLIC_APPLICATION_RESULTS.md). The reserved Year
 Prediction test partition remains unevaluated.
+
+## Public selection-rule sensitivity
+
+The separate `benchmarks/public-selection-results-v1.zip` contains the 120 paired
+method checkpoints and their frozen protocol/source, runtime, resume and analysis
+evidence. It depends on the included original public application archive for
+training-only rankings, validation paths, shared folds and external references.
+
+```sh
+uv run python experiments/reproduce_public_selection.py --output artifacts/public-selection-review
+```
+
+This verifies both archives and the frozen source snapshot, extracts them into a
+new directory, and regenerates four numerical reports plus plots without raw
+data or model fitting. All numerical differences accepted under the declared
+roundoff tolerance are logged; counts and structure remain exact. CI verifies
+both archives across Python 3.10–3.12 and reanalyzes on Python 3.12.
+
+The [full replay protocol](docs/PUBLIC_SELECTION_PLAN.md) uses public raw archives
+through the same pinned loader. It refits both selection policies on each outer
+fold (720 new fits), reusing original training-only ranking work. This is an
+incremental experiment cost, not the standalone cost of either selector.
+See [results and limitations](docs/PUBLIC_SELECTION_RESULTS.md).
